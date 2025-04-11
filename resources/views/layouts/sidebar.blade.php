@@ -28,7 +28,7 @@
 
     <!-- Nav Item - Tables -->
     <li class="nav-item">
-        <a class="nav-link" href="/resident">
+        <a class="nav-link" href="/resident ">
             <i class="fas fa-fw fa-table"></i>
             <span>Penduduk</span></a>
     </li>
