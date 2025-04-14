@@ -23,21 +23,21 @@ class ResidentController extends Controller
 
     public function store(Request $request)
     {   
-        $validated = $request->validate([
+        $validatedData = $request->validate([
             'nik' => ['required', 'min:16', 'max:16'],
             'name' => ['required', 'max:100'],
             'gender' => ['required', Rule::in(['male', 'female'])],
             'birth_date' => ['required', 'string'],
             'birth_place' => ['required', 'max:100'],
             'address' => ['required', 'max:700'],
-            'religion' => ['nullable', 'max:50'],
+            'religion' => ['required', Rule::in(['islam', 'kristen_protestan', 'kristen_katholik', 'hindu', 'buddha', 'konghucu'])],
             'marital_status' => ['required', Rule::in(['single', 'married', 'divorced', 'widowed'])],
-            'occupation' => ['nullable', 'max:100'],
-            'phone' => ['nullable', 'max:15'],
+            'occupation' => ['required', 'max:100'],
+            'phone' => ['required', 'max:15'],
             'status' => ['required', Rule::in(['active', 'moved', 'deceased'])],
         ]);
 
-        Resident::create($request->validated());
+        Resident::create($validatedData);
 
         return redirect('/resident')->with('success', 'berhasil menambah data');
     }
@@ -53,21 +53,21 @@ class ResidentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $validatedData = $request->validate([
             'nik' => ['required', 'min:16', 'max:16'],
             'name' => ['required', 'max:100'],
             'gender' => ['required', Rule::in(['male', 'female'])],
             'birth_date' => ['required', 'string'],
             'birth_place' => ['required', 'max:100'],
             'address' => ['required', 'max:700'],
-            'religion' => ['nullable', 'max:50'],
+            'religion' => ['required', Rule::in(['islam', 'kristen_protestan', 'kristen_katholik', 'hindu', 'buddha', 'konghucu'])],
             'marital_status' => ['required', Rule::in(['single', 'married', 'divorced', 'widowed'])],
-            'occupation' => ['nullable', 'max:100'],
-            'phone' => ['nullable', 'max:15'],
+            'occupation' => ['required', 'max:100'],
+            'phone' => ['required', 'max:15'],
             'status' => ['required', Rule::in(['active', 'moved', 'deceased'])],
         ]);
 
-        Resident::findOrfail($id)->update($request->validated());
+        Resident::findOrfail($id)->update($validatedData);
 
         return redirect('/resident')->with('success', 'berhasil mengubah data');
     }
