@@ -24,6 +24,10 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+        ], [
+            'email.required' => 'Email tidak boleh kosong',
+            'email.email' => 'Format email tidak valid',
+            'password.required' => 'Password tidak boleh kosong',
         ]);
         
         if (Auth::attempt($credentials)) {
@@ -32,10 +36,12 @@ class AuthController extends Controller
             $userStatus = Auth::user()->status;
             
             if ($userStatus == "submitted") {
+                $this->_logout($request);
                 return back()->withErrors([
-                    'email' => 'Terjadi kesalahan periksa kembali email atau password anda.',
+                    'email' => 'Akun anda masih menunggu persetujuan admin',
                 ]);
             } else if ($userStatus == "rejected") {
+                $this->_logout($request);
                 return back()->withErrors([
                     'email' => 'Akun anda ditolak.',
                 ]);
@@ -80,17 +86,21 @@ class AuthController extends Controller
 
     }
 
+    public function _logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    }
+
     public function logout(Request $request)
     {
         if(!Auth::check()){
             return redirect('/');
         }
-        Auth::logout();
-    
-        $request->session()->invalidate();
-    
-        $request->session()->regenerateToken();
-    
+        
+        $this->_logout($request);
+
         return redirect('/');
     }
 }

@@ -19,14 +19,22 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('template/css/sb-admin-2.min.css') }}" rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="bg-gradient-primary">
     {{-- @if ($errors->any())
         @dd($errors->all())
     @endif --}}
-        
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                title: "Error!",
+                text: "@foreach($errors->all() as $error) {{ $error }}{{ $loop->last ? '.' : ',' }} @endforeach",
+                icon: "error"
+            });
+        </script>
+    @endif
     <div class="container">
 
         <!-- Outer Row -->
