@@ -2,7 +2,7 @@
 
 -   ini adalah web aplikasi aspirasi masyarakan mengunakan laravel 12 #hehehe
 
-## Pengaturan-Bot
+## Pengaturan-Laravel
 
 1. Buka `.env_example` ubah nama menjadi `.env`
 2. Instal dependensi yang diperlukan composer install
