@@ -10,15 +10,22 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     public function login(){
+        if(Auth::check()){
+            return back();
+        }
         return view('pages.auth.login');
     }
 
     public function authenticate(Request $request){
+        if(Auth::check()){
+            return back();
+        }
+
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
- 
+        
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
@@ -44,11 +51,18 @@ class AuthController extends Controller
 
     public function registerView()
     {
+        if(Auth::check()){
+            return back();
+        }
+        
         return view('pages.auth.register');
     }
 
     public function register(Request $request)
     {
+        if(Auth::check()){
+            return back();
+        }
         $validated = $request->validate([
             'name' => ['required'],
             'email' => ['required', 'email'],
@@ -68,6 +82,9 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        if(!Auth::check()){
+            return redirect('/');
+        }
         Auth::logout();
     
         $request->session()->invalidate();
