@@ -23,10 +23,15 @@
                 ],
             ],
             2 =>[
-            (object )[
+                (object )[
                 'title' => 'Dashboard',
                 'path'  => 'dahboard',
                  'icon' => 'fas fa-fw fa-tachometer-al',
+                ],
+                (object )[
+                'title' => 'Aspirasi',
+                'path'  => 'complaint',
+                 'icon' => 'fas fa-fw fa-scroll',
                 ],
             ],
 ];

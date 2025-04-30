@@ -46,7 +46,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function residents(){
-        return $this->hasMany(Resident::class);
+    public function resident(){
+        return $this->hasOne(Resident::class);
     }
 }
