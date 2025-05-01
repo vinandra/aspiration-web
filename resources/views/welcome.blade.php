@@ -47,7 +47,7 @@
               <a class="nav-link" href="https://pendrikankidul.semarangkota.go.id/">Pendrikan Kidul</a>
             </li>
             <li class="nav-item px-3">
-              <a class="nav-link" href="#">Aspirasi</a>
+              <a class="nav-link" href="/login">Aspirasi</a>
             </li>
           </ul>
         </div>

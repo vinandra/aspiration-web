@@ -6,7 +6,11 @@ use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [AuthController::class, 'login']);
+Route::get('/', function (){
+    return view('welcome');
+});
+
+Route::get('/login', [AuthController::class, 'login']);
 Route::post('/login', [AuthController::class, 'authenticate']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/register', [AuthController::class, 'registerView']);
