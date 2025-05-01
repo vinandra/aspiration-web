@@ -40,3 +40,4 @@ Route::get('/complaint/{id}', [ComplaintController::class, 'edit'])->middleware(
 Route::post('/complaint', [ComplaintController::class, 'store'])->middleware('role:User');
 Route::put('/complaint/{id}', [ComplaintController::class, 'update'])->middleware('role:User');
 Route::delete('/complaint/{id}', [ComplaintController::class, 'destroy'])->middleware('role:User');
+Route::post('/complaint/update-status/{id}', [ComplaintController::class, 'update_status'])->middleware('role:Admin');
