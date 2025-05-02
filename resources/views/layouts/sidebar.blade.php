@@ -3,7 +3,7 @@
         1 =>[
             (object )[
                 'title' => 'Dashboard',
-                'path'  => 'dahboard',
+                'path'  => 'dashboard',
                  'icon' => 'fas fa-fw fa-tachometer-al',
                 ],
             (object )[
@@ -30,7 +30,7 @@
             2 =>[
                 (object )[
                 'title' => 'Dashboard',
-                'path'  => 'dahboard',
+                'path'  => 'dashboard',
                  'icon' => 'fas fa-fw fa-tachometer-al',
                 ],
                 (object )[

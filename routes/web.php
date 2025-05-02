@@ -21,6 +21,25 @@ Route::get('/dashboard', function () {
     return view('pages.dashboard');
 })->middleware('role:Admin,User');
 
+Route::get('/notifications', function (){
+    return view('pages.notifications');
+});
+Route::post('/notification/{id}/read', function($id){
+    $notification = \Illuminate\Support\Facades\DB::table('notifications')->where('id', $id);
+    $notification->update([
+        'read_at' => \Illuminate\Support\Facades\DB::raw('CURRENT_TIMESTAMP'),
+    ]);
+
+    $dataArray = json_decode($notification->firstOrFail()->data, true);
+
+    if (isset($dataArray['complaint_id'])) {
+        return redirect('/complaint');
+    }
+
+    return back();
+    
+})->middleware('role:Admin,User');
+
 Route::get('/resident', [ResidentController::class, 'index'])->middleware('role:Admin');
 Route::get('/resident/create', [ResidentController::class, 'create'])->middleware('role:Admin');
 Route::get('/resident/{id}', [ResidentController::class, 'edit'])->middleware('role:Admin');
@@ -38,6 +57,7 @@ Route::post('/profile/{id}', [UserController::class, 'update_profile'])->middlew
 Route::get('/change-password', [UserController::class, 'chage_password_view'])->middleware('role:Admin,User');
 Route::post('/change-password/{id}', [UserController::class, 'change_password'])->middleware('role:Admin,User');
 
+
 Route::get('/complaint', [ComplaintController::class, 'index'])->middleware('role:Admin,User');
 Route::get('/complaint/create', [ComplaintController::class, 'create'])->middleware('role:User');
 Route::get('/complaint/{id}', [ComplaintController::class, 'edit'])->middleware('role:User');
@@ -45,3 +65,4 @@ Route::post('/complaint', [ComplaintController::class, 'store'])->middleware('ro
 Route::put('/complaint/{id}', [ComplaintController::class, 'update'])->middleware('role:User');
 Route::delete('/complaint/{id}', [ComplaintController::class, 'destroy'])->middleware('role:User');
 Route::post('/complaint/update-status/{id}', [ComplaintController::class, 'update_status'])->middleware('role:Admin');
+
