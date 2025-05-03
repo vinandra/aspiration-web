@@ -52,7 +52,7 @@
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw text-white"></i>
                 <!-- Counter - Alerts -->
-                <span class="badge badge-primary badge-counter">{{ count(auth()->user()->notifications)}}</span>
+                <span class="badge badge-primary badge-counter">{{ count(auth()->user()->unreadNotifications)}}</span>
             </a>
             <!-- Dropdown - Alerts -->
             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
