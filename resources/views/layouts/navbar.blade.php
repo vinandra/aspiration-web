@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand topbar mb-4 static-top shadow" style="background-color:#C0392B">
+<nav class="navbar navbar-expand topbar mb-4 static-top shadow" style="background-color:#95281D">
 
     <!-- Sidebar Toggle (Topbar) -->
     <button id="sidebarToggleTop" class="btn btn-link d-md-none  mr-3" style="background-color: white">
@@ -172,7 +172,7 @@
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-white">
                     {{ auth()->user()->name }}
-            </span>
+                </span>
                 <img class="img-profile rounded-circle"
                     src="{{ asset('template/img/undraw_profile.svg') }}">
             </a>

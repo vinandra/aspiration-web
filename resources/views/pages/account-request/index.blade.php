@@ -1,6 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+        <style>
+            thead{
+                background-color: #00b4d8;
+                text-align: center;
+                color: whitesmoke;
+            }
+        </style>
         {{-- page heading --}}
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Permintaan Akun</h1>
@@ -14,6 +21,7 @@
             });
         </script>
         @endif
+        
         {{-- tabel --}}
     
         <div class="row">

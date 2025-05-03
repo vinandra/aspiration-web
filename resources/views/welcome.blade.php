@@ -1,3 +1,4 @@
+@include('layouts.loading')
 <!doctype html>
 <html lang="en">
   <head>
@@ -8,51 +9,39 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
       body {
-        padding-top: 112px;
+        padding-top: 80px ;
       }
       .navbar a:hover{
-        color: #C0392B;
+        color: #C0392B !important;
       }
     </style>
   </head>
   <body style="background-color: #D7D7D7;">
-    <!-- Nav-1: Kontak -->
-    <nav class="navbar navbar-expand-lg fixed-top" style="background-color:#C0392B;">
-      <div class="container-fluid text-white">
-        <a class="navbar-brand text-white" href="#">
-          <i class="bi bi-telephone-fill me-2"></i>024-3553232
-        </a>
-        <a class="navbar-brand text-white" href="mailto:pendrikankidul2@gmail.com">
-          <i class="bi bi-envelope-fill me-2"></i>Email
-        </a>
-      </div>
-    </nav>
+   {{-- navbar  --}}
+    @include('layouts.navbar1')
 
-    <!-- Nav-2: Menu Utama -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow fixed-top" style="top: 56px;">
-      <div class="container">
-        <a class="navbar-brand" href="#">
-          <img src="https://via.placeholder.com/100x50?text=Logo" alt="Logo" style="height: 50px;">
-        </a>
-        <button class="navbar-toggler bg-danger" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
-          aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-center" id="navbarMain">
-          <ul class="navbar-nav mb-2 mb-lg-0">
-            <li class="nav-item px-3">
-              <a class="nav-link active" aria-current="page" href="#">Beranda</a>
-            </li>
-            <li class="nav-item px-3">
-              <a class="nav-link" href="https://pendrikankidul.semarangkota.go.id/">Pendrikan Kidul</a>
-            </li>
-            <li class="nav-item px-3">
-              <a class="nav-link" href="/login">Aspirasi</a>
-            </li>
-          </ul>
+    <!-- Carousel Section -->
+    <div id="carouselExampleAutoplay" class="carousel slide mt-5" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="{{ asset('images/carousel/gambar1.jpg') }}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+          <img src="{{ asset('images/carousel/gambar2.jpg') }}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+          <img src="{{ asset('images/carousel/gambar3.jpg') }}" class="d-block w-100" alt="...">
         </div>
       </div>
-    </nav>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplay" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplay" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
 
     <!-- Konten Utama -->
     <main class="container my-5">
@@ -61,30 +50,7 @@
         Selamat Datang di Website Portal Kelurahan Pendrikan Kidul
       </p>
 
-      <!-- Sambutan Lurah -->
-      <div class="card shadow p-4 rounded-4 mx-auto" style="max-width: 900px;">
-        <div class="row g-4 align-items-center">
-          <div class="col-md-4 text-center">
-            <img src="https://via.placeholder.com/200" alt="Kepala Organisasi" class="img-fluid rounded-circle shadow" style="max-width: 200px;">
-            <h5 class="mt-3">Nama Kepala</h5>
-            <p class="text-muted mb-0">Lurah</p>
-          </div>
-          <div class="col-md-8">
-            <h4 class="mb-3">Sambutan Lurah</h4>
-            <p class="text-justify">
-              Assalamualaikum Warahmatullahi Wabarakaatuh,
-              <br><br>
-              Pertama-tama kami panjatkan puji syukur atas limpahan rahmat-Nya, sehingga situs web 
-              <a href="http://www.pendrikankidul.semarangkota.go.id" target="_blank">www.pendrikankidul.semarangkota.go.id</a> 
-              ini dapat kami selesaikan dengan baik. Tak lupa kami ucapkan terima kasih kepada jajaran Dinas Komunikasi, Informatika, Statistik dan Persandian Kota Semarang.
-              <br><br>
-              Situs ini sebagai wujud komitmen kami dalam memberikan informasi seluas-luasnya kepada masyarakat. Kami berharap masyarakat dapat mengikuti informasi terbaru secara berkala.
-              <br><br>
-              Wassalamualaikum warahmatullahi wabarakaatuh.
-            </p>
-          </div>
-        </div>
-      </div>
+      
 
       <!-- YouTube Section -->
       <div class="card shadow p-4 rounded-4 mt-5 mx-auto" style="max-width: 900px;">

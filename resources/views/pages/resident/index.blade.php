@@ -8,7 +8,17 @@
                     class="fas fa-plus fa-sm text-white-50"></i> Tambah</a>
         </div>
         {{-- tabel --}}
-    
+    <style>
+        thead{
+            background-color: #00b4d8;
+            text-align: center;
+            color: whitesmoke;
+        }
+        .tombol{
+            background-color: #00b4d8;
+            color: whitesmoke;
+        }
+    </style>
         <div class="row">
             <div class="col">
                 <div class="card shadow">
@@ -53,7 +63,7 @@
                                             <td>{{ $item->occupation }}</td>
                                             <td>{{ $item->phone }}</td>
                                             <td>{{ $item->status }}</td>
-                                            <td>
+                                            <td class="tombol">
                                                 <div class="d-flex align-item-center" style="gap: 10px;">
                                                     <a href="/resident/{{ $item->id }}" class="d-inline-block  btn btn-sm btn-warning">
                                                         <i class="fas fa-pen"></i>
@@ -62,7 +72,7 @@
                                                         <i class="fas fa-eraser"></i>
                                                     </button>
                                                     @if (!is_null($item->user_id))
-                                                    <button type="button"  class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#detailAccount-{{ $item->id }}">
+                                                    <button type="button"  class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#detailAccount-{{ $item->id }}">
                                                         Lihat Akun
                                                     </button>
                                                     @include('pages.resident.detail-account')

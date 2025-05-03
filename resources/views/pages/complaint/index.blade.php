@@ -10,7 +10,13 @@
             </a>
         @endif
     </div>
-
+    <style>
+        thead{
+            background-color: #00b4d8;
+            text-align: center;
+            color: whitesmoke;
+        }
+    </style>
     {{-- SweetAlert Notifications --}}
     @if (session('success'))
         <script>
