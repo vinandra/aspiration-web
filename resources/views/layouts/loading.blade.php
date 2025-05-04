@@ -59,6 +59,6 @@
     // Hilangkan loading setelah 10 detik
     setTimeout(() => {
       document.getElementById('loading').style.display = 'none';
-    }, 10000); // 10000 ms = 10 detik
+    }, 3000); // 10000 ms = 10 detik
   </script>
   

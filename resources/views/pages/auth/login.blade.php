@@ -5,50 +5,34 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
+    <meta name="description" content="Login Kelurahan Pendrikan Kidul">
     <meta name="author" content="">
 
     <title>Aspirasi - Login</title>
-    @include('layouts.loading')
-
+    
     <!-- Fonts & Icons -->
-    <link href="{{ asset('template/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
+    <link href="{{ asset('template/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
 
-    <!-- Custom CSS -->
-    <link href="{{ asset('template/css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         body {
-            background-image: url('{{ asset('images/carousel/semarang.jpg') }}');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             margin: 0;
-        }
-        .card-body{
-            background-image: url('{{ asset('images/carousel/semarang_malam.jpg') }}');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
+            font-family: 'Nunito', sans-serif;
         }
 
-        .navbar a:hover {
-            color: #C0392B;
+        main {
+            height: 100vh;
+            background: url('{{ asset('images/carousel/semarang.jpg') }}') center/cover no-repeat;
         }
 
-        .login-card {
-            max-width: 450px;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-           
+        .card-body {
+            background: url('{{ asset('images/carousel/image24.png') }}') center/cover no-repeat;
+            color: white;
         }
 
         .form-control:focus {
@@ -64,6 +48,17 @@
         .btn-primary:hover {
             background-color: #2e59d9;
         }
+
+        .header-contact {
+            background-color: #c0392b;
+            color: white;
+        }
+
+        .card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 
@@ -73,37 +68,42 @@
         <script>
             Swal.fire({
                 title: "Error!",
-                text: "@foreach($errors->all() as $error) {{ $error }}{{ $loop->last ? '.' : ',' }} @endforeach",
+                text: "@foreach($errors->all() as $error) {{ $error }}{{ $loop->last ? '.' : ', ' }} @endforeach",
                 icon: "error"
             });
         </script>
     @endif
 
-    <main class="login-container">
-        <div class="card o-hidden border-0 login-card">
-            <div class="card-body p-4">
-                <div class="text-center mb-4">
-                    <img src="{{ asset('images/carousel/pendrikan_kidul.png') }}" alt="logo kelurahan pendrikan kidul" style="max-width: 4cm ">
-                    <h1 class="h4 text-gray-900">Selamat Datang Kembali!</h1>
-                </div>
-                <form class="user" action="/login" method="POST"
-                    onsubmit="const submitBtn = document.getElementById('submitBtn'); submitBtn.disabled = true; submitBtn.textContent = 'Loading...' ">
+    <!-- Kontak Atas -->
+    <div class="header-contact d-flex justify-content-between px-4 py-2 align-items-center">
+        <div><i class="bi bi-telephone-fill me-2"></i>024-3553232</div>
+        <div><i class="bi bi-envelope-fill me-2"></i>pendrikankidul2@gmail.com</div>
+    </div>
+
+    <!-- Konten Login -->
+    <main class="d-flex justify-content-center align-items-center">
+        <div class="card" style="max-width: 500px; width: 100%;">
+            <div class="card-header text-center bg-white border-0">
+                <img src="{{ asset('images/carousel/pendrikan_kidul.png') }}" alt="Logo" style="max-height: 80px;" class="mb-2">
+                <h4 class="text-primary fw-bold mb-0">KELURAHAN PENDRIKAN KIDUL</h4>
+            </div>
+            <div class="card-body px-4 py-4">
+                <h5 class="text-center mb-4">Selamat Datang Kembali!</h5>
+                <form class="user" action="/login" method="POST" onsubmit="const submitBtn = document.getElementById('submitBtn'); submitBtn.disabled = true; submitBtn.textContent = 'Loading...';">
                     @csrf
                     @method('POST')
                     <div class="form-group mb-3">
-                        <input type="email" class="form-control form-control-user" id="inputEmail" name="email"
-                            placeholder="Enter Email Address...">
+                        <label for="inputEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" name="email" placeholder="Masukkan Alamat Email" required>
                     </div>
                     <div class="form-group mb-4">
-                        <input type="password" class="form-control form-control-user" id="inputPassword"
-                            name="password" placeholder="Password">
+                        <label for="inputPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Password" required>
                     </div>
-                    <button id="submitBtn" type="submit" class="btn btn-primary btn-user btn-block w-100 mb-3">
-                        Login
-                    </button>
+                    <button id="submitBtn" type="submit" class="btn btn-primary w-100 mb-3">Login</button>
                 </form>
                 <div class="text-center">
-                    <a class="small" href="/register">Buat akun baru!</a>
+                    <a class="text-light small" href="/register">Buat akun baru!</a>
                 </div>
             </div>
         </div>
