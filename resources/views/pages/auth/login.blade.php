@@ -27,7 +27,7 @@
 
         main {
             height: 100vh;
-            background: url('{{ asset('images/carousel/semarang.jpg') }}') center/cover no-repeat;
+            background: url('{{ asset('images/carousel/image25.png') }}') center/cover no-repeat;
         }
 
         .card-body {

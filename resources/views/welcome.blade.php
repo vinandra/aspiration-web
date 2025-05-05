@@ -62,7 +62,6 @@
     </main>
 
     <!-- Footer -->
-    <!-- Footer -->
     @include('layouts.footer')
     <!-- End of Footer -->
 
