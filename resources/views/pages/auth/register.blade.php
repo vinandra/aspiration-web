@@ -93,7 +93,7 @@
             </div>
             <div class="card-body px-4 py-4">
                 <h5 class="text-center mb-4">Registrasi</h5>
-                <form class="user" action="/register" method="POST" onsubmit="const submitBtn = document.getElementById('submitBtn'); submitBtn.disabled = true; submitBtn.textContent = 'Loading...';">
+                <form class="user" action="/register" method="POST" enctype="multipart/form-data" onsubmit="const submitBtn = document.getElementById('submitBtn'); submitBtn.disabled = true; submitBtn.textContent = 'Loading...';">
                     @csrf
                     @method('POST')
                     <div class="mb-3">
@@ -114,6 +114,13 @@
                         <label for="inputPassword" class="form-label">Password</label>
                         <input type="password" class="form-control @error('password') is-invalid @enderror" id="inputPassword" name="password" placeholder="Masukkan Password" required>
                         @error('password')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="mb-4">
+                        <label for="inputPhoto" class="form-label">Foto Profil</label>
+                        <input type="file" class="form-control @error('photo') is-invalid @enderror" id="inputPhoto" name="photo" accept="image/*">
+                        @error('photo')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>

@@ -66,3 +66,5 @@ Route::put('/complaint/{id}', [ComplaintController::class, 'update'])->middlewar
 Route::delete('/complaint/{id}', [ComplaintController::class, 'destroy'])->middleware('role:User');
 Route::post('/complaint/update-status/{id}', [ComplaintController::class, 'update_status'])->middleware('role:Admin');
 
+Route::get('/profile', [UserController::class, 'profile_view'])->middleware('role:Admin,User')->name('profile.view');
+Route::put('/profile/{userId}', [UserController::class, 'update_profile'])->middleware('role:Admin,User')->name('profile.update');

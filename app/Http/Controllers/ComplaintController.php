@@ -17,7 +17,7 @@ class ComplaintController extends Controller
         $residentId = Auth::user()->resident->id ?? null;
         $complaints = Complaint::when(Auth::user()->role_id == \App\Models\Role::ROLE_USER, function ($query) use ($residentId){
             $query->where('resident_id', $residentId);
-        })->paginate(5);
+        })->paginate(10);
         
         return view('pages.complaint.index', compact(
             'complaints',
