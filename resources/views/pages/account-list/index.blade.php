@@ -34,7 +34,7 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Nama</th>
-                                            <th>Email</th>
+                                            <th>Nik</th>
                                             <th>Status</th>
                                             <th>Aksi</th>
                                         </tr>
@@ -53,7 +53,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration + $users->firstItem() - 1 }}</td>
                                                 <td>{{ $item->name }}</td>
-                                                <td>{{ $item->email }}</td>
+                                                <td>{{ $item->nik }}</td>
                                                 <td>
                                                     @if ($item->status == 'approved')
                                                         <span class="badge badge-success">Aktif</span>
