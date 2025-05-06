@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -78,18 +79,20 @@ class AuthController extends Controller
         if (Auth::check()) {
             return back();
         }
-
-        // Validasi inputan
         $validated = $request->validate([
             'name' => ['required'],
             'nik' => ['required', 'numeric', 'digits:16'],  // Validasi NIK harus angka dan 16 digit
             'password' => ['required'],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ], [
             'name.required' => 'Nama lengkap harus diisi',
             'nik.required' => 'NIK harus diisi',
             'nik.numeric' => 'NIK harus berupa angka',
             'nik.digits' => 'NIK harus terdiri dari 16 digit',
             'password.required' => 'Password harus diisi',
+            'photo.image' => 'Foto harus berupa gambar',
+            'photo.mimes' => 'Foto harus berekstensi jpeg, png, jpg, gif, atau svg',
+            'photo.max' => 'Ukuran foto maksimal 2MB',
         ]);
 
         // Simpan data pengguna baru
@@ -97,10 +100,18 @@ class AuthController extends Controller
         $user->name = $request->input('name');
         $user->nik = $request->input('nik');
         $user->password = Hash::make($request->input('password'));
-        $user->role_id = 2;  // Misalnya role_id 2 untuk user biasa
-        $user->saveOrFail();
+        $user->role_id = 2; // Misal, untuk role user
 
-        return redirect('/')->with('success', 'Berhasil mendaftar, silakan tunggu konfirmasi admin.');
+        // Menyimpan foto profil jika ada
+        if ($request->hasFile('photo')) {
+            // Simpan foto di folder 'public/profile_photos'
+            $photoPath = $request->file('photo')->store('profile_photos', 'public'); 
+            $user->profile_photo = $photoPath; // Simpan path foto di database
+        }
+
+        $user->save();
+
+        return redirect('/')->with('success', 'Berhasil mendaftar, silakan tunggu konfirmasi admin');
     }
 
     // Fungsi untuk logout
