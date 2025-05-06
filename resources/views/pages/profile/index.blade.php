@@ -31,12 +31,12 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        {{-- email --}}
+                        {{-- nik --}}
                         <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" inputmode="numeric" name="email" id="email" 
-                                class="form-control @error('email') is-invalid @enderror" value="{{ old('email', auth()->user()->email) }}" readonly>
-                            @error('email')
+                            <label for="nik">NIK</label>
+                            <input type="nik" inputmode="numeric" name="nik" id="nik" 
+                                class="form-control @error('nik') is-invalid @enderror" value="{{ old('nik', auth()->user()->nik) }}" readonly>
+                            @error('nik')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

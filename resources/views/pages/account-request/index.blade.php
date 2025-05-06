@@ -35,7 +35,7 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Nama</th>
-                                            <th>Email</th>
+                                            <th>Nik</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -53,7 +53,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration + $users->firstItem() - 1 }}</td>
                                                 <td>{{ $item->name }}</td>
-                                                <td>{{ $item->email }}</td>
+                                                <td>{{ $item->nik }}</td>
                                                 <td>
                                                     <div class="d-flex" style="gap: 10px;">
                                                         <button type="button"  class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmationReject-{{ $item->id }}">

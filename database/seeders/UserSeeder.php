@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         User::create([
             'id'=>1,
             'name'=>'Admin',
-            'email'=>'admin@gmail.com',
+            'nik'=>'1111111111111111',
             'password'=>'123',
             'status'=>'approved',
             'role_id'=>'1',
@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
         User::create([
             'id'=>2,
             'name'=>'Penduduk 1',
-            'email'=>'penduduk1@gmail.com',
+            'nik'=>'2222222222222222',
             'password'=>'123',
             'status'=>'approved',
             'role_id'=>'2',

@@ -93,8 +93,8 @@
                     @csrf
                     @method('POST')
                     <div class="form-group mb-3">
-                        <label for="inputEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="inputEmail" name="email" placeholder="Masukkan Alamat Email" required>
+                        <label for="inputnik" class="form-label">NIK</label>
+                        <input type="nik" class="form-control" id="inputnik" name="nik" placeholder="Masukkan nik" required>
                     </div>
                     <div class="form-group mb-4">
                         <label for="inputPassword" class="form-label">Password</label>

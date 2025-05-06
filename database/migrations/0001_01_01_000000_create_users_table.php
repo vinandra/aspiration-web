@@ -20,8 +20,8 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('nik')->unique();
+            $table->timestamp('nik_verified_at')->nullable();
             $table->string('password');
             $table->enum('status', ['submitted', 'approved', 'rejected'])->default('submitted');
             $table->unsignedBigInteger('role_id');
@@ -32,7 +32,7 @@ return new class extends Migration
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            $table->string('nik')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });

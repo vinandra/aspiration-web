@@ -104,9 +104,9 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="inputEmail" class="form-label">Alamat Email</label>
-                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="inputEmail" name="email" placeholder="Masukkan Email" required>
-                        @error('email')
+                        <label for="inputnik" class="form-label">Masukkan Nik</label>
+                        <input type="nik" class="form-control @error('nik') is-invalid @enderror" id="inputnik" name="nik" placeholder="Masukkan nik" required>
+                        @error('nik')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>
