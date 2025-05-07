@@ -100,7 +100,7 @@ class AuthController extends Controller
         $user->name = $request->input('name');
         $user->nik = $request->input('nik');
         $user->password = Hash::make($request->input('password'));
-        $user->role_id = 2; // Misal, untuk role user
+        $user->role_id = 9; // Misal, untuk role user
 
         // Menyimpan foto profil jika ada
         if ($request->hasFile('photo')) {
