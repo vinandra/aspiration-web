@@ -1,64 +1,55 @@
 <!-- Loading Screen -->
 <div id="loading">
-    <h1 id="loading-text"></h1>
-  </div>
-  
-  <!-- Style -->
-  <style>
-    #loading {
-      position: fixed;
-      width: 100vw;
-      height: 100vh;
-      background: white;
-      color: #C0392B;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: sans-serif;
-      z-index: 9999;
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+</div>
+
+<!-- Style -->
+<style>
+  #loading {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px; /* Jarak antar batang */
+    z-index: 9999;
+    overflow: hidden;
+  }
+
+  .bar {
+    width: 10px;            /* Lebar batang */
+    height: 40px;           /* Tinggi awal batang */
+    background-color: #C0392B; /* Warna merah Pixar */
+    animation: bounce 1s infinite ease-in-out;
+    border-radius: 3px;     /* Sedikit membulatkan sudut */
+  }
+
+  .bar:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .bar:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: scaleY(1);
     }
-  
-    #loading-text {
-      font-size: 2rem;
-      border-right: 3px solid #C0392B;
-      white-space: nowrap;
-      overflow: hidden;
+    50% {
+      transform: scaleY(1.8); /* Memanjangkan batang secara vertikal */
     }
-  </style>
-  
-  <!-- Script -->
-  <script>
-    const text = 'Memuat, Harap Tunggu...';
-    const speed = 150;
-    const pause = 1000;
-  
-    let i = 0;
-    let isDeleting = false;
-    const el = document.getElementById('loading-text');
-  
-    function typeLoop() {
-      if (isDeleting) {
-        el.textContent = text.substring(0, i--);
-      } else {
-        el.textContent = text.substring(0, i++);
-      }
-  
-      if (!isDeleting && i > text.length) {
-        isDeleting = true;
-        setTimeout(typeLoop, pause);
-      } else if (isDeleting && i === 0) {
-        isDeleting = false;
-        setTimeout(typeLoop, speed);
-      } else {
-        setTimeout(typeLoop, speed);
-      }
-    }
-  
-    typeLoop();
-  
-    // Hilangkan loading setelah 10 detik
-    setTimeout(() => {
-      document.getElementById('loading').style.display = 'none';
-    }, 4000); // 10000 ms = 10 detik
-  </script>
-  
+  }
+</style>
+
+<!-- Script -->
+<script>
+  // Hilangkan loading setelah 4 detik
+  setTimeout(() => {
+    document.getElementById('loading').style.display = 'none';
+  }, 4000);
+</script>

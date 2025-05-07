@@ -49,9 +49,12 @@
       <p class="text-center text-danger fw-semibold mb-4">
         Selamat Datang di Website Portal Kelurahan Pendrikan Kidul
       </p>
-
-      
-
+      <!-- struktur Section -->
+      <div class="card shadow p-4 rounded-4 mt-5 mx-auto" style="max-width: 900px;">
+        <div class="ratio ratio-16x9 rounded">
+          <img src="{{ asset('images/carousel/Struktur organisasi.png') }}" title="Strukrur Organisasi"></img>
+        </div>
+      </div>
       <!-- YouTube Section -->
       <div class="card shadow p-4 rounded-4 mt-5 mx-auto" style="max-width: 900px;">
         <h4 class="text-center mb-4 text-danger fw-semibold">Youtube Kelurahan Pendrikan Kidul</h4>

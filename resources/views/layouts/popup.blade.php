@@ -7,8 +7,8 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tutup"></button>
         </div>
         <div class="modal-body">
-            <img src="{{ asset('images/carousel/pendrikan_kidul.png') }}" alt="" style="max-width: 4cm;">
-          Selamat datang di website resmi Kelurahan Pendrikan Kidul. Silakan jelajahi layanan kami.
+            {{-- <img src="{{ asset('images/carousel/pendrikan_kidul.png') }}" alt="" style="max-width: 4cm;"> --}}
+          Selamat datang di website resmi Aspirasi Kelurahan Pendrikan Kidul. Silakan jelajahi layanan kami.
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>

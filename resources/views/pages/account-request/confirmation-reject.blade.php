@@ -2,7 +2,7 @@
   <!-- Modal -->
   <div class="modal fade" id="confirmationReject-{{ $item->id }}" tabindex="-1" aria-labelledby="confirmationRejectLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="/account-request/approval/{{ $item->id }}" method="post">
+        <form action="/account-request/approval/b{{ $item->id }}" method="post">
           @csrf
           @method('POST')
             <div class="modal-content">

@@ -19,7 +19,7 @@
         <div class="col">
             <form action="/profile/{{ auth()->user()->id }}" method="post" enctype="multipart/form-data">
                 @csrf
-                @method('POST')
+                @method('PUT')  <!-- Changed POST to PUT -->
                 <div class="card">
                     <div class="card-body">
                         {{-- Foto Profil --}}
@@ -46,7 +46,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        {{-- nik --}}
+                        {{-- NIK --}}
                         <div class="form-group">
                             <label for="nik">NIK</label>
                             <input type="nik" inputmode="numeric" name="nik" id="nik" 
@@ -64,6 +64,7 @@
                     </div>
                 </div>
             </form>
+            
         </div>
     </div>
 @endsection

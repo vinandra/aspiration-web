@@ -4,24 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\Complaint;
 use App\Models\User;
+use App\Models\Role;
 use App\Notifications\ComplaintStatusChanged;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Routing\Controller;
 
 class ComplaintController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
-        $residentId = Auth::user()->resident->id ?? null;
-        $complaints = Complaint::when(Auth::user()->role_id == \App\Models\Role::ROLE_USER, function ($query) use ($residentId){
-            $query->where('resident_id', $residentId);
-        })->paginate(10);
-        
-        return view('pages.complaint.index', compact(
-            'complaints',
-        ));
+        $user = Auth::user();
+        $residentId = $user->resident->id ?? null;
+
+        $middleRoles = [Role::ROLE_KASI_PEMBANGUNAN, Role::ROLE_SEKRETARIS_LURAH, Role::ROLE_LURAH];
+
+        $complaints = Complaint::query()
+            ->when($user->role_id == Role::ROLE_USER, fn($q) => $q->where('resident_id', $residentId))
+            ->when(in_array($user->role_id, $middleRoles), fn($q) => $q->where('forwarded_to', $user->role_id))
+            ->latest()
+            ->paginate(10);
+
+        return view('pages.complaint.index', compact('complaints'));
     }
 
     public function create()
@@ -38,22 +49,34 @@ class ComplaintController extends Controller
         ]);
 
         $resident = Auth::user()->resident;
-        
-        if (!$resident){
+
+        if (!$resident) {
             return redirect('/complaint')->with('error', 'Akun anda belum terhubung dengan data penduduk manapun');
         }
 
         $complaint = new Complaint();
-        $complaint->resident_id = Auth::user()->resident->id;
-        $complaint->title = $request->input('title');
-        $complaint->content = $request->input('content');
+        $complaint->resident_id = $resident->id;
+        $complaint->title = $request->title;
+        $complaint->content = $request->content;
 
-        if ($request->hasFile('photo_proof')){
+        if ($request->hasFile('photo_proof')) {
             $filePath = $request->file('photo_proof')->store('public/uploads');
             $complaint->photo_proof = $filePath;
         }
 
         $complaint->save();
+
+        // Kirim notifikasi ke semua admin
+        $adminUsers = User::where('role_id', Role::ROLE_ADMIN)->get();
+        foreach ($adminUsers as $admin) {
+            $admin->notify(new ComplaintStatusChanged(
+                $complaint,
+                null,            
+                'new',           
+                'Admin',         
+                true              
+            ));
+        }
 
         return redirect('/complaint')->with('success', 'Berhasil mengajukan aspirasi');
     }
@@ -61,11 +84,15 @@ class ComplaintController extends Controller
     public function edit($id)
     {
         $resident = Auth::user()->resident;
-        if (!$resident){
+        if (!$resident) {
             return redirect('/complaint')->with('error', 'Akun anda belum terhubung dengan data penduduk manapun');
         }
 
         $complaint = Complaint::findOrFail($id);
+
+        if ($complaint->resident_id !== $resident->id) {
+            return redirect('/complaint')->with('error', 'Anda tidak memiliki akses untuk mengubah aduan ini.');
+        }
 
         return view('pages.complaint.edit', compact('complaint'));
     }
@@ -79,21 +106,25 @@ class ComplaintController extends Controller
         ]);
 
         $resident = Auth::user()->resident;
-        if (!$resident){
+        if (!$resident) {
             return redirect('/complaint')->with('error', 'Akun anda belum terhubung dengan data penduduk manapun');
         }
+
         $complaint = Complaint::findOrFail($id);
 
-        if($complaint->status != 'new') {
+        if ($complaint->resident_id !== $resident->id) {
+            return redirect('/complaint')->with('error', 'Anda tidak memiliki akses untuk mengubah aduan ini.');
+        }
+
+        if ($complaint->status !== 'new') {
             return redirect('/complaint')->with('error', "Gagal mengubah aduan, status aduan anda saat ini adalah $complaint->status_label");
         }
 
-        $complaint->resident_id = $resident->id;
-        $complaint->title = $request->input('title');
-        $complaint->content = $request->input('content');
+        $complaint->title = $request->title;
+        $complaint->content = $request->content;
 
-        if ($request->hasFile('photo_proof')){
-            if (isset($complaint->photo_proof)){
+        if ($request->hasFile('photo_proof')) {
+            if ($complaint->photo_proof) {
                 Storage::delete($complaint->photo_proof);
             }
             $filePath = $request->file('photo_proof')->store('public/uploads');
@@ -108,14 +139,22 @@ class ComplaintController extends Controller
     public function destroy($id)
     {
         $resident = Auth::user()->resident;
-        if (!$resident){
+        if (!$resident) {
             return redirect('/complaint')->with('error', 'Akun anda belum terhubung dengan data penduduk manapun');
         }
 
         $complaint = Complaint::findOrFail($id);
 
-        if($complaint->status != 'new') {
+        if ($complaint->resident_id !== $resident->id) {
+            return redirect('/complaint')->with('error', 'Anda tidak memiliki akses untuk menghapus aduan ini.');
+        }
+
+        if ($complaint->status !== 'new') {
             return redirect('/complaint')->with('error', "Gagal menghapus aduan, status aduan anda saat ini adalah $complaint->status_label");
+        }
+
+        if ($complaint->photo_proof) {
+            Storage::delete($complaint->photo_proof);
         }
 
         $complaint->delete();
@@ -129,23 +168,74 @@ class ComplaintController extends Controller
             'status' => ['required', Rule::in(['new', 'processing', 'completed'])],
         ]);
 
-        $resident = Auth::user()->resident;
-        if (Auth::user()->role_id == \App\Models\Role::ROLE_USER && !$resident){
-            return redirect('/complaint')->with('error', 'Akun anda belum terhubung dengan data penduduk manapun');
-        }
+        $user = Auth::user();
         $complaint = Complaint::findOrFail($id);
-        $oldStatus = $complaint->status_label;
 
-        $complaint->status = $request->input('status');
+        if ($user->role_id == Role::ROLE_USER) {
+            return redirect('/complaint')->with('error', 'Anda tidak memiliki akses untuk mengubah status aduan.');
+        }
+
+        $oldStatus = $complaint->status_label;
+        $complaint->status = $request->status;
         $complaint->save();
 
-        $newStatus = $complaint->status_label;
-
-        User::where('id', $complaint->resident->user_id)
-            ->firstOrFail()
-            ->notify(new ComplaintStatusChanged($complaint, $oldStatus, $newStatus));
+        $userToNotify = User::find(optional($complaint->resident)->user_id);
+        if ($userToNotify) {
+            $userToNotify->notify(new ComplaintStatusChanged(
+                $complaint,
+                $oldStatus,
+                $complaint->status_label
+            ));
+        }
 
         return redirect('/complaint')->with('success', 'Berhasil mengubah status');
+    }
+
+    public function forward(Request $request, $id)
+    {
+        $request->validate([
+            'forward_to' => ['required', Rule::in([
+                Role::ROLE_KASI_PEMBANGUNAN,
+                Role::ROLE_SEKRETARIS_LURAH,
+                Role::ROLE_LURAH,
+                Role::ROLE_KASI_KESEJAHTERAAN_SOSIAL,
+                Role::ROLE_KASI_PEMERINTAHAN_KETENTRAMAN,
+                Role::ROLE_PENGADMINISTRASI_UMUM
+            ])],
+        ]);
+
+        $user = Auth::user();
+        if (!in_array($user->role_id, [
+            Role::ROLE_ADMIN,
+            Role::ROLE_KASI_PEMBANGUNAN,
+            Role::ROLE_SEKRETARIS_LURAH,
+            Role::ROLE_LURAH,
+            Role::ROLE_KASI_KESEJAHTERAAN_SOSIAL,
+            Role::ROLE_KASI_PEMERINTAHAN_KETENTRAMAN,
+            Role::ROLE_PENGADMINISTRASI_UMUM
+        ])) {
+            return redirect('/complaint')->with('error', 'Anda tidak memiliki akses untuk meneruskan aduan.');
+        }
+
+        $complaint = Complaint::findOrFail($id);
+        $complaint->forwarded_to = $request->forward_to;
+        $complaint->status = 'processing';
+        $complaint->save();
+
+        $usersToNotify = User::with('role')->where('role_id', $request->forward_to)->get();
+
+        foreach ($usersToNotify as $userToNotify) {
+            $roleName = optional($userToNotify->role)->name ?? 'tanpa nama role';
+            $userToNotify->notify(new ComplaintStatusChanged(
+                $complaint,
+                null,
+                null,
+                $roleName,
+                true
+            ));
+        }
+
+        return redirect()->back()->with('success', 'Aspirasi berhasil diteruskan.');
     }
 
 }
