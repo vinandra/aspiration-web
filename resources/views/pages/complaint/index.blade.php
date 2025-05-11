@@ -62,6 +62,7 @@
                                     @endif
                                     <th>Judul</th>
                                     <th>Isi Aspirasi</th>
+                                    <th>Kategori</th>
                                     <th>Status</th>
                                     <th>Foto (optional)</th>
                                     <th>Tanggal Laporan</th>
@@ -92,6 +93,9 @@
                                             @endif
                                             <td>{{ $item->title }}</td>
                                             <td>{!! wordwrap($item->content, 50, "<br>\n") !!}</td>
+                                            <td>
+                                                <span class="badge badge-secondary">{{ $item->kategori }}</span>
+                                            </td>
                                             <td>
                                                 <span class="badge badge-{{ $item->status_color }}">{{ $item->status_label }}</span>
                                             </td>

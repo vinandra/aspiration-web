@@ -43,6 +43,20 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <div class="form-group">
+                            <label for="kategori">Kategori</label>
+                            <select name="kategori" id="kategori" class="form-control @error('kategori') is-invalid @enderror">
+                                <option value="">Pilih Kategori</option>
+                                <option value="Pembangunan" {{ old('kategori') == 'Pembangunan' ? 'selected' : '' }}>Pembangunan</option>
+                                <option value="Kesejahteraan Sosial" {{ old('kategori') == 'Kesejahteraan Sosial' ? 'selected' : '' }}>Kesejahteraan Sosial</option>
+                                <option value="Ketentraman dan Ketertiban Umum" {{ old('kategori') == 'Ketentraman dan Ketertiban Umum' ? 'selected' : '' }}>Ketentraman dan Ketertiban Umum</option>
+                                <option value="Pengelolaan Teknologi Informasi" {{ old('kategori') == 'Pengelolaan Teknologi Informasi' ? 'selected' : '' }}>Pengelolaan Teknologi Informasi</option>
+                            </select>
+                            @error('kategori')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
                     <div class="card-footer">
                         <div class="d-flex justify-content-end" style="gap: 10px">

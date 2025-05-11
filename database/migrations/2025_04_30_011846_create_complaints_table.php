@@ -17,11 +17,12 @@ return new class extends Migration
             $table->unsignedBigInteger('resident_id');
             $table->string('title');
             $table->text('content');
+            $table->enum('kategori', ['Pembangunan', 'Kesejahteraan Sosial', 'Ketentraman dan Ketertiban Umum', 'Pengelolaan Teknologi Informasi'])->nullable(); // Menambahkan kategori
             $table->enum('status', ['new', 'processing', 'completed'])->default('new');
             $table->string('photo_proof')->nullable();
             $table->timestamp('report_date')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
-
+    
             $table->foreign('resident_id')->references('id')->on('residents')->onDelete('cascade');
         });
     }

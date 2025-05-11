@@ -45,6 +45,7 @@ class ComplaintController extends Controller
         $request->validate([
             'title' => ['required', 'min:3', 'max:255'],
             'content' => ['required', 'min:3', 'max:2000'],
+            'kategori' => ['required', Rule::in(['Pembangunan', 'Kesejahteraan Sosial', 'Ketentraman dan Ketertiban Umum', 'Pengelolaan Teknologi Informasi'])],
             'photo_proof' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
 
@@ -58,6 +59,7 @@ class ComplaintController extends Controller
         $complaint->resident_id = $resident->id;
         $complaint->title = $request->title;
         $complaint->content = $request->content;
+        $complaint->kategori = $request->kategori;
 
         if ($request->hasFile('photo_proof')) {
             $filePath = $request->file('photo_proof')->store('public/uploads');
@@ -102,6 +104,7 @@ class ComplaintController extends Controller
         $request->validate([
             'title' => ['required', 'min:3', 'max:255'],
             'content' => ['required', 'min:3', 'max:2000'],
+            'kategori' => ['required', Rule::in(['Pembangunan', 'Kesejahteraan Sosial', 'Ketentraman dan Ketertiban Umum', 'Pengelolaan Teknologi Informasi'])],
             'photo_proof' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
 
@@ -122,6 +125,7 @@ class ComplaintController extends Controller
 
         $complaint->title = $request->title;
         $complaint->content = $request->content;
+        $complaint->kategori = $request->kategori;
 
         if ($request->hasFile('photo_proof')) {
             if ($complaint->photo_proof) {
