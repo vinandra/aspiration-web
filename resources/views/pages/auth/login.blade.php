@@ -85,7 +85,7 @@
         <div class="card" style="max-width: 500px; width: 100%;">
             <div class="card-header text-center bg-white border-0">
                 <img src="{{ asset('images/carousel/pendrikan_kidul.png') }}" alt="Logo" style="max-height: 80px;" class="mb-2">
-                <h4 class="text-primary fw-bold mb-0">KELURAHAN PENDRIKAN KIDUL</h4>
+                {{-- <h4 class="text-primary fw-bold mb-0">KELURAHAN PENDRIKAN KIDUL</h4> --}}
             </div>
             <div class="card-body px-4 py-4">
                 <h5 class="text-center mb-4">Selamat Datang Kembali!</h5>

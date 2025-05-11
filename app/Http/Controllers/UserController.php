@@ -94,7 +94,7 @@ class UserController extends Controller
         return back()->with('success', 'Berhasil mengubah data');
     }
 
-    public function chage_password_view()
+    public function change_password_view()
     {
         return view('pages.profile.change-password');
     }
