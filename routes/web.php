@@ -6,11 +6,10 @@ use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DisposisiController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+Route::get('/', [HomeController::class, 'welcome'])->name('welcome');
 
 // ========================
 // Authentication Routes
@@ -70,6 +69,7 @@ Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris
 // ========================
 Route::middleware(['role:user'])->group(function () {
     Route::resource('/complaint', ComplaintController::class)->only(['create', 'edit', 'store', 'update', 'destroy']);
+    Route::put('/complaint/{id}', [ComplaintController::class, 'update']);
 });
 
 Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris Lurah,Lurah,KASI Kesejahteraan Sosial,KASI Pemerintahan Ketentraman,user'])->group(function () {
@@ -79,6 +79,12 @@ Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris
 Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris Lurah,Lurah,KASI Kesejahteraan Sosial,KASI Pemerintahan Ketentraman'])->group(function () {
     Route::post('/complaint/update-status/{id}', [ComplaintController::class, 'update_status']);
     Route::post('/complaint/forward/{id}', [ComplaintController::class, 'forward'])->name('complaint.forward');
+});
+
+// Complaint Publish/Unpublish Routes (Admin only)
+Route::middleware(['role:Admin'])->group(function () {
+    Route::post('/complaint/{id}/publish', [ComplaintController::class, 'publish'])->name('complaint.publish');
+    Route::post('/complaint/{id}/unpublish', [ComplaintController::class, 'unpublish'])->name('complaint.unpublish');
 });
 
 // ========================

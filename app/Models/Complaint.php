@@ -33,6 +33,23 @@ class Complaint extends Model
         };
     }
 
+    public function getIsPublishedLabelAttribute()
+    {
+        return $this->is_published ? 'Dipublikasikan' : 'Tidak Dipublikasikan';
+    }
+
+    public function publish()
+    {
+        $this->is_published = true;
+        $this->save();
+    }
+
+    public function unpublish()
+    {
+        $this->is_published = false;
+        $this->save();
+    }
+
     public function resident()
     {
         return $this->belongsTo(Resident::class);

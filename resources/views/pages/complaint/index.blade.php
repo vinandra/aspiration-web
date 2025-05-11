@@ -130,6 +130,14 @@
                                                         </select>
                                                     </form>
                                                 @endif
+                                                @if (auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN)
+                                                    <form action="/complaint/{{ $item->id }}/{{ $item->is_published ? 'unpublish' : 'publish' }}" method="POST" style="display:inline;">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm {{ $item->is_published ? 'btn-danger' : 'btn-success' }}">
+                                                            {{ $item->is_published ? 'Unpublish' : 'Publish' }}
+                                                        </button>
+                                                    </form>
+                                                @endif
                                             </td>
                                             <td class="text-center">
                                                 @php

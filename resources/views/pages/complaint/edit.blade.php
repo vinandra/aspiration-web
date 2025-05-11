@@ -9,8 +9,6 @@
     <div class="row">
         <div class="col">
             <form action="/complaint/{{ $complaint->id }}" method="post" enctype="multipart/form-data">
-                {{-- @csrf --}}
-                {{-- @method('POST') --}}
                 @csrf
                 @method('PUT')
                 <div class="card">

@@ -49,7 +49,33 @@
       <p class="text-center text-danger fw-semibold mb-4">
         Selamat Datang di Website Portal Kelurahan Pendrikan Kidul
       </p>
-      <!-- struktur Section -->
+
+      <!-- Aspirasi yang Dipublikasikan -->
+      <div class="card shadow p-4 rounded-4 mt-5 mx-auto" style="max-width: 900px;">
+        <h4 class="text-center mb-4 text-danger fw-semibold">Aspirasi yang Dipublikasikan</h4>
+        @forelse ($publishedComplaints as $complaint)
+          <div class="mb-3">
+            <h5>{{ $complaint->title }}</h5>
+            <p>{{ $complaint->content }}</p>
+            <span class="badge badge-secondary">{{ $complaint->kategori }}</span>
+            <span class="badge badge-info">{{ $complaint->report_date_label }}</span>
+            @if ($complaint->photo_proof)
+              <div class="mt-2">
+                <a href="{{ asset('storage/' . $complaint->photo_proof) }}" target="_blank" rel="noopener noreferrer">
+                  <img src="{{ asset('storage/' . $complaint->photo_proof) }}" alt="Foto Bukti" style="max-width:300px;">
+                </a>
+              </div>
+            @endif
+            <a href="{{ route('complaint.edit', $complaint->id) }}" class="btn btn-sm btn-warning">
+                <i class="fas fa-pen"></i>
+            </a>
+          </div>
+        @empty
+          <p class="text-center">Tidak ada aspirasi yang dipublikasikan saat ini.</p>
+        @endforelse
+      </div>
+
+      <!-- Struktur Section -->
       <div class="card shadow p-4 rounded-4 mt-5 mx-auto" style="max-width: 900px;">
         <div class="ratio ratio-16x9 rounded">
           <img src="{{ asset('images/carousel/Struktur organisasi.png') }}" title="Strukrur Organisasi"></img>

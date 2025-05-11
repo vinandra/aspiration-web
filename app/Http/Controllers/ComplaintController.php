@@ -242,4 +242,28 @@ class ComplaintController extends Controller
         return redirect()->back()->with('success', 'Aspirasi berhasil diteruskan.');
     }
 
+    public function publish($id)
+    {
+        $user = Auth::user();
+        if ($user->role_id !== Role::ROLE_ADMIN) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk mempublikasikan aduan.');
+        }
+
+        $complaint = Complaint::findOrFail($id);
+        $complaint->publish();
+        return redirect()->back()->with('success', 'Aduan berhasil dipublikasikan.');
+    }
+
+    public function unpublish($id)
+    {
+        $user = Auth::user();
+        if ($user->role_id !== Role::ROLE_ADMIN) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk meng-unpublish aduan.');
+        }
+
+        $complaint = Complaint::findOrFail($id);
+        $complaint->unpublish();
+        return redirect()->back()->with('success', 'Aduan berhasil di-unpublish.');
+    }
+
 }
