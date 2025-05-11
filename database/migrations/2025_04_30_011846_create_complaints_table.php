@@ -23,7 +23,6 @@ return new class extends Migration
             $table->timestamp('report_date')->default(DB::raw('CURRENT_TIMESTAMP'));
             
             $table->boolean('is_published')->default(false);
-            
             $table->timestamps();
     
             $table->foreign('resident_id')->references('id')->on('residents')->onDelete('cascade');
