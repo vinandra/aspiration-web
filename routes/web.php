@@ -69,7 +69,6 @@ Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris
 // ========================
 Route::middleware(['role:user'])->group(function () {
     Route::resource('/complaint', ComplaintController::class)->only(['create', 'edit', 'store', 'update', 'destroy']);
-    Route::put('/complaint/{id}', [ComplaintController::class, 'update']);
 });
 
 Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris Lurah,Lurah,KASI Kesejahteraan Sosial,KASI Pemerintahan Ketentraman,user'])->group(function () {
