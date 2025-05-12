@@ -109,7 +109,7 @@
                                             <td>
                                                 @if ($currentRole == \App\Models\Role::ROLE_USER && $item->status == 'new')
                                                     <div class="d-flex align-items-center" style="gap: 10px;">
-                                                        <a href="/complaint/{{ $item->id }}" class="btn btn-sm btn-warning">
+                                                        <a href="/complaint/{{ $item->id }}/edit" class="btn btn-sm btn-warning">
                                                             <i class="fas fa-pen"></i>
                                                         </a>
                                                         <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmationDelete-{{ $item->id }}">
