@@ -82,9 +82,9 @@ class UserSeeder extends Seeder
             'role_id' => 9,
         ]);
 
-        // Tambahkan ke tabel residents
-        Resident::create([
-            'user_id' => $userPenduduk->id,
+        // Tambahkan ke tabel residents dengan `user_id` yang valid
+        $resident = Resident::create([
+            'user_id' => $userPenduduk->id, // Merujuk ke ID pengguna yang baru dibuat
             'nik' => '1234567890123456',
             'name' => 'Penduduk 1',
             'gender' => 'male',
@@ -92,6 +92,7 @@ class UserSeeder extends Seeder
             'birth_place' => 'City A',
             'address' => 'Street 123, City A',
             'marital_status' => 'single',
+            'status' => 'active',
         ]);
     }
 }
