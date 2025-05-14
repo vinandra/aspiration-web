@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Resident;  
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -63,55 +64,104 @@ class AuthController extends Controller
         ])->onlyInput('nik');
     }
 
-    // Menampilkan halaman registrasi
-    public function registerView()
+    // Menampilkan halaman registrasi Resident (form pertama)
+    public function registerResidentView()
     {
-        if (Auth::check()) {
-            return back();
-        }
-        
-        return view('pages.auth.register');
+        return view('pages.auth.registerResident');
     }
 
-    // Proses pendaftaran
-    public function register(Request $request)
+    // Fungsi untuk menyimpan data Resident
+    public function registerResident(Request $request)
     {
-        if (Auth::check()) {
-            return back();
-        }
         $validated = $request->validate([
             'name' => ['required'],
             'nik' => ['required', 'numeric', 'digits:16'],  // Validasi NIK harus angka dan 16 digit
-            'password' => ['required'],
-            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'gender' => ['required', 'in:male,female'],  // Validasi gender
+            'birth_date' => ['required', 'date'],  // Validasi tanggal lahir
+            'birth_place' => ['required'],  // Validasi tempat lahir
+            'address' => ['required'],  // Validasi alamat
+            'religion' => ['nullable', 'string'],  // Validasi agama
+            'marital_status' => ['required', 'in:single,married,divorced,widowed'],  // Validasi status pernikahan
+            'occupation' => ['nullable'],  // Validasi pekerjaan
+            'phone' => ['nullable', 'string'],  // Validasi nomor telepon
+            'status' => ['required', 'in:active,moved,deceased'],  // Validasi status resident
         ], [
             'name.required' => 'Nama lengkap harus diisi',
             'nik.required' => 'NIK harus diisi',
             'nik.numeric' => 'NIK harus berupa angka',
             'nik.digits' => 'NIK harus terdiri dari 16 digit',
+            'gender.required' => 'Jenis kelamin harus diisi',
+            'birth_date.required' => 'Tanggal lahir harus diisi',
+            'birth_place.required' => 'Tempat lahir harus diisi',
+            'address.required' => 'Alamat harus diisi',
+            'marital_status.required' => 'Status pernikahan harus diisi',
+            'status.required' => 'Status harus diisi',
+        ]);
+
+        // Simpan data resident
+        $resident = new Resident();
+        $resident->name = $request->input('name');
+        $resident->nik = $request->input('nik');
+        $resident->gender = $request->input('gender');
+        $resident->birth_date = $request->input('birth_date');
+        $resident->birth_place = $request->input('birth_place');
+        $resident->address = $request->input('address');
+        $resident->religion = $request->input('religion');
+        $resident->marital_status = $request->input('marital_status');
+        $resident->occupation = $request->input('occupation');
+        $resident->phone = $request->input('phone');
+        $resident->status = $request->input('status');
+        $resident->save();  // Simpan data penduduk
+
+        // Redirect ke halaman kedua untuk membuat akun dan password
+        return redirect()->route('register.account', ['resident_id' => $resident->id]);
+    }
+
+    // Menampilkan halaman registrasi Akun dan Password (form kedua)
+    public function registerAccountView($resident_id)
+    {
+        $resident = Resident::find($resident_id); // Ambil data resident berdasarkan ID
+        return view('pages.auth.registerAccount', compact('resident'));
+    }
+
+    // Fungsi untuk menyimpan Akun dan Password
+    public function registerAccount(Request $request, $resident_id)
+    {
+        $resident = Resident::find($resident_id);
+
+        $validated = $request->validate([
+            'password' => ['required', 'min:6'], // Validasi password
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'], // Validasi foto profil
+        ], [
             'password.required' => 'Password harus diisi',
+            'password.min' => 'Password harus minimal 6 karakter',
             'photo.image' => 'Foto harus berupa gambar',
             'photo.mimes' => 'Foto harus berekstensi jpeg, png, jpg, gif, atau svg',
             'photo.max' => 'Ukuran foto maksimal 2MB',
         ]);
 
-        // Simpan data pengguna baru
+        // Simpan data user
         $user = new User();
-        $user->name = $request->input('name');
-        $user->nik = $request->input('nik');
+        $user->name = $resident->name;  // Ambil nama dari resident
+        $user->nik = $resident->nik;    // Ambil NIK dari resident
         $user->password = Hash::make($request->input('password'));
-        $user->role_id = 9; // Misal, untuk role user
+        $user->resident_id = $resident->id;  // Kaitkan user dengan resident
+        $user->role_id = 9;  // Misal, untuk role user
 
         // Menyimpan foto profil jika ada
         if ($request->hasFile('photo')) {
             // Simpan foto di folder 'public/profile_photos'
-            $photoPath = $request->file('photo')->store('profile_photos', 'public'); 
+            $photoPath = $request->file('photo')->store('profile_photos', 'public');
             $user->profile_photo = $photoPath; // Simpan path foto di database
         }
 
-        $user->save();
+        $user->save();  // Simpan data user
 
-        return redirect('/')->with('success', 'Berhasil mendaftar, silakan tunggu konfirmasi admin');
+        // Login otomatis setelah pendaftaran
+        Auth::login($user);
+
+        // Redirect ke halaman dashboard setelah login
+        return redirect('/dashboard')->with('success', 'Berhasil mendaftar dan login, Anda dapat membuat aspirasi!');
     }
 
     // Fungsi untuk logout

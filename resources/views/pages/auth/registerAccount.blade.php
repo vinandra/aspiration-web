@@ -8,13 +8,12 @@
     <meta name="description" content="Register Kelurahan Pendrikan Kidul">
     <meta name="author" content="">
 
-    <title>Aspirasi - Register</title>
+    <title>Aspirasi - Register Akun</title>
 
     <!-- Fonts & Icons -->
     <link href="{{ asset('template/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
 
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -23,16 +22,12 @@
         body {
             margin: 0;
             font-family: 'Nunito', sans-serif;
-        }
-
-        main {
-            height: 100vh;
-            background: url('{{ asset('images/carousel/semarang.jpg') }}') center/cover no-repeat;
+            background-color: #ffffff; /* White background */
         }
 
         .card-body {
-            background: url('{{ asset('images/carousel/image24.png') }}') center/cover no-repeat;
-            color: white;
+            background-color: #f8f9fa; /* Light background for the card */
+            color: #333;
         }
 
         .form-control:focus {
@@ -43,6 +38,7 @@
         .btn-primary {
             background-color: #4e73df;
             border: none;
+            transition: background-color 0.3s ease;
         }
 
         .btn-primary:hover {
@@ -55,13 +51,26 @@
         }
 
         .card {
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
 
-        .invalid-feedback {
-            display: block;
+        .card-header img {
+            max-height: 80px;
+        }
+
+        .text-center a {
+            color: #f7f7f7;
+        }
+
+        .text-center a:hover {
+            color: #4e73df;
+        }
+
+        /* Ensure the form does not cover the navbar */
+        main {
+            padding-top: 100px; /* Adjust this to give space for the navbar */
         }
     </style>
 </head>
@@ -92,42 +101,31 @@
                 <h4 class="text-primary fw-bold mb-0">KELURAHAN PENDRIKAN KIDUL</h4>
             </div>
             <div class="card-body px-4 py-4">
-                <h5 class="text-center mb-4">Registrasi</h5>
-                <form class="user" action="/register" method="POST" enctype="multipart/form-data" onsubmit="const submitBtn = document.getElementById('submitBtn'); submitBtn.disabled = true; submitBtn.textContent = 'Loading...';">
+                <h5 class="text-center mb-4">Registrasi Akun</h5>
+                <form class="user" action="{{ route('register.account.post', ['resident_id' => $resident->id]) }}" method="POST" enctype="multipart/form-data" onsubmit="const submitBtn = document.getElementById('submitBtn'); submitBtn.disabled = true; submitBtn.textContent = 'Loading...';">
                     @csrf
                     @method('POST')
+
                     <div class="mb-3">
-                        <label for="inputName" class="form-label">Nama Lengkap</label>
-                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="inputName" name="name" placeholder="Masukkan Nama Lengkap" required>
-                        @error('name')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label for="inputnik" class="form-label">Masukkan Nik</label>
-                        <input type="nik" class="form-control @error('nik') is-invalid @enderror" id="inputnik" name="nik" placeholder="Masukkan nik" required>
-                        @error('nik')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="mb-4">
                         <label for="inputPassword" class="form-label">Password</label>
                         <input type="password" class="form-control @error('password') is-invalid @enderror" id="inputPassword" name="password" placeholder="Masukkan Password" required>
                         @error('password')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>
-                    <div class="mb-4">
+
+                    <div class="mb-3">
                         <label for="inputPhoto" class="form-label">Foto Profil</label>
                         <input type="file" class="form-control @error('photo') is-invalid @enderror" id="inputPhoto" name="photo" accept="image/*">
                         @error('photo')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>
+
                     <button id="submitBtn" type="submit" class="btn btn-primary w-100">Simpan</button>
                 </form>
                 <div class="text-center mt-3">
-                    <a href="/login" class="text-light small">Sudah punya akun? Login</a>
+                    <a href="/login" class="text-dark small">Sudah punya akun? Login</a>
                 </div>
             </div>
         </div>

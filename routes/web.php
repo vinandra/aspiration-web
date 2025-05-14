@@ -17,8 +17,17 @@ Route::get('/', [HomeController::class, 'welcome'])->name('welcome');
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'authenticate']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/register', [AuthController::class, 'registerView'])->name('register.view');
-Route::post('/register', [AuthController::class, 'register'])->name('register');
+// Route::get('/register', [AuthController::class, 'registerView'])->name('register.view');
+// Route::post('/register', [AuthController::class, 'register'])->name('register');
+
+// ========================
+// New routes for resident registration
+// ========================
+Route::get('/register-resident', [AuthController::class, 'registerResidentView'])->name('register.resident');
+Route::post('/register-resident', [AuthController::class, 'registerResident'])->name('register.resident.post');
+
+Route::get('/register-account/{resident_id}', [AuthController::class, 'registerAccountView'])->name('register.account');
+Route::post('/register-account/{resident_id}', [AuthController::class, 'registerAccount'])->name('register.account.post');
 
 // ========================
 // Dashboard Route (multi-role)
@@ -28,22 +37,6 @@ Route::get('/dashboard', function () {
 })->middleware('role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris Lurah,Lurah,KASI Kesejahteraan Sosial,KASI Pemerintahan Ketentraman,user')->name('dashboard');
 
 // ========================
-// Notifications Routes
-// ========================
-Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris Lurah,Lurah,KASI Kesejahteraan Sosial,KASI Pemerintahan Ketentraman,user'])->group(function () {
-    Route::get('/notifications', function () {
-        return view('pages.notifications');
-    });
-
-    Route::post('/notification/{id}/read', function ($id) {
-        $notification = \Illuminate\Support\Facades\DB::table('notifications')->where('id', $id);
-        $notification->update(['read_at' => \Illuminate\Support\Facades\DB::raw('CURRENT_TIMESTAMP')]);
-        $dataArray = json_decode($notification->firstOrFail()->data, true);
-        return isset($dataArray['complaint_id']) ? redirect('/complaint') : back();
-    });
-});
-
-// ========================
 // Data Penduduk (Admin, Pengadministrasi Umum)
 // ========================
 Route::middleware(['role:Admin,Pengadministrasi Umum'])->group(function () {
@@ -51,7 +44,6 @@ Route::middleware(['role:Admin,Pengadministrasi Umum'])->group(function () {
     Route::get('/account-list', [UserController::class, 'account_list_view']);
     Route::get('/account-request', [UserController::class, 'account_request_view']);
     Route::post('/account-request/approval/{id}', [UserController::class, 'account_approval']);
-    // Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
 });
 
 // ========================
@@ -60,7 +52,7 @@ Route::middleware(['role:Admin,Pengadministrasi Umum'])->group(function () {
 Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris Lurah,Lurah,KASI Kesejahteraan Sosial,KASI Pemerintahan Ketentraman,user'])->group(function () {
     Route::get('/profile', [UserController::class, 'profile_view'])->name('profile.view');
     Route::put('/profile/{userId}', [UserController::class, 'update_profile'])->name('profile.update');
-    Route::get('/change-password', [UserController::class, 'change_password_view']); // typo diperbaiki
+    Route::get('/change-password', [UserController::class, 'change_password_view']);
     Route::post('/change-password/{id}', [UserController::class, 'change_password']);
 });
 
@@ -70,11 +62,9 @@ Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris
 Route::middleware(['role:user'])->group(function () {
     Route::resource('/complaint', ComplaintController::class)->only(['create', 'edit', 'store', 'update', 'destroy']);
 });
-
 Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris Lurah,Lurah,KASI Kesejahteraan Sosial,KASI Pemerintahan Ketentraman,user'])->group(function () {
     Route::get('/complaint', [ComplaintController::class, 'index']);
 });
-
 Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris Lurah,Lurah,KASI Kesejahteraan Sosial,KASI Pemerintahan Ketentraman'])->group(function () {
     Route::post('/complaint/update-status/{id}', [ComplaintController::class, 'update_status']);
     Route::post('/complaint/forward/{id}', [ComplaintController::class, 'forward'])->name('complaint.forward');
@@ -92,5 +82,5 @@ Route::middleware(['role:Admin'])->group(function () {
 Route::middleware(['role:KASI Pembangunan,KASI Kesejahteraan Sosial,KASI Pemerintahan Ketentraman,Lurah,Sekretaris Lurah'])->group(function () {
     // Route::get('/disposisi', [DisposisiController::class, 'index']);
 });
-Route::put('/profile/{userId}', [UserController::class, 'update_profile'])->name('profile.update');
 
+Route::put('/profile/{userId}', [UserController::class, 'update_profile'])->name('profile.update');

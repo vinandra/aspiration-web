@@ -103,7 +103,7 @@
                     <button id="submitBtn" type="submit" class="btn btn-primary w-100 mb-3">Login</button>
                 </form>
                 <div class="text-center">
-                    <a class="text-light small" href="/register">Buat akun baru!</a>
+                    <a class="text-light small" href="/register-resident">Buat akun baru!</a>
                 </div>
             </div>
         </div>
