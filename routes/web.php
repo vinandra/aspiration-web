@@ -51,7 +51,7 @@ Route::middleware(['role:Admin,Pengadministrasi Umum'])->group(function () {
     Route::get('/account-list', [UserController::class, 'account_list_view']);
     Route::get('/account-request', [UserController::class, 'account_request_view']);
     Route::post('/account-request/approval/{id}', [UserController::class, 'account_approval']);
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+    // Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
 });
 
 // ========================
@@ -90,7 +90,7 @@ Route::middleware(['role:Admin'])->group(function () {
 // Disposisi Routes (KASI, Lurah, Sekretaris Lurah)
 // ========================
 Route::middleware(['role:KASI Pembangunan,KASI Kesejahteraan Sosial,KASI Pemerintahan Ketentraman,Lurah,Sekretaris Lurah'])->group(function () {
-    Route::get('/disposisi', [DisposisiController::class, 'index']);
+    // Route::get('/disposisi', [DisposisiController::class, 'index']);
 });
 Route::put('/profile/{userId}', [UserController::class, 'update_profile'])->name('profile.update');
 
