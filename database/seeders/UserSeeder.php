@@ -15,7 +15,6 @@ class UserSeeder extends Seeder
             'name' => 'Risky Hardiwiranto, A.Md.Kom - Pengelolaan Teknologi',
             'nik' => '1111111111111111',
             'password' => bcrypt('123'),
-            'status' => 'approved',
             'role_id' => 1,
         ]);
 
@@ -24,7 +23,6 @@ class UserSeeder extends Seeder
             'name' => 'Purwanti - Pengadministrasi Umum',
             'nik' => '1111222233334444',
             'password' => bcrypt('123'),
-            'status' => 'approved',
             'role_id' => 2,
         ]);
 
@@ -33,7 +31,6 @@ class UserSeeder extends Seeder
             'name' => '- KASI Pembangunan',
             'nik' => '3333333333333333',
             'password' => bcrypt('123'),
-            'status' => 'approved',
             'role_id' => 3,
         ]);
 
@@ -42,7 +39,6 @@ class UserSeeder extends Seeder
             'name' => 'Rochmat Hidayat, S.E - Sekretaris Lurah',
             'nik' => '4444444444444444',
             'password' => bcrypt('123'),
-            'status' => 'approved',
             'role_id' => 4,
         ]);
 
@@ -51,7 +47,6 @@ class UserSeeder extends Seeder
             'name' => 'R. Wisnu Efendi, S.E, M.M - Lurah',
             'nik' => '5555555555555555',
             'password' => bcrypt('123'),
-            'status' => 'approved',
             'role_id' => 5,
         ]);
 
@@ -60,7 +55,6 @@ class UserSeeder extends Seeder
             'name' => 'Wiwin Kristiyanti, S.H - KASI Kesejahteraan Sosial',
             'nik' => '3333333333333334',
             'password' => bcrypt('123'),
-            'status' => 'approved',
             'role_id' => 7,
         ]);
 
@@ -69,7 +63,6 @@ class UserSeeder extends Seeder
             'name' => 'Susetyo Arief H, S.A.P - KASI Pemerintahan, Ketentraman dan Ketertiban Umum',
             'nik' => '3333333333333335',
             'password' => bcrypt('123'),
-            'status' => 'approved',
             'role_id' => 8,
         ]);
 
@@ -78,7 +71,6 @@ class UserSeeder extends Seeder
             'name' => 'Penduduk 1',
             'nik' => '2222222222222222',
             'password' => bcrypt('123'),
-            'status' => 'approved',
             'role_id' => 9,
         ]);
 

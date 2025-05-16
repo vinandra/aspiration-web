@@ -17,8 +17,6 @@ Route::get('/', [HomeController::class, 'welcome'])->name('welcome');
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'authenticate']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-// Route::get('/register', [AuthController::class, 'registerView'])->name('register.view');
-// Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 // ========================
 // New routes for resident registration
@@ -41,9 +39,6 @@ Route::get('/dashboard', function () {
 // ========================
 Route::middleware(['role:Admin,Pengadministrasi Umum'])->group(function () {
     Route::resource('/resident', ResidentController::class)->except(['show']);
-    Route::get('/account-list', [UserController::class, 'account_list_view']);
-    Route::get('/account-request', [UserController::class, 'account_request_view']);
-    Route::post('/account-request/approval/{id}', [UserController::class, 'account_approval']);
 });
 
 // ========================
@@ -75,12 +70,3 @@ Route::middleware(['role:Admin'])->group(function () {
     Route::post('/complaint/{id}/publish', [ComplaintController::class, 'publish'])->name('complaint.publish');
     Route::post('/complaint/{id}/unpublish', [ComplaintController::class, 'unpublish'])->name('complaint.unpublish');
 });
-
-// ========================
-// Disposisi Routes (KASI, Lurah, Sekretaris Lurah)
-// ========================
-Route::middleware(['role:KASI Pembangunan,KASI Kesejahteraan Sosial,KASI Pemerintahan Ketentraman,Lurah,Sekretaris Lurah'])->group(function () {
-    // Route::get('/disposisi', [DisposisiController::class, 'index']);
-});
-
-Route::put('/profile/{userId}', [UserController::class, 'update_profile'])->name('profile.update');

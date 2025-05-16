@@ -41,21 +41,6 @@ class AuthController extends Controller
         // Cek autentikasi
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
-            $userStatus = Auth::user()->status;
-            
-            if ($userStatus == "submitted") {
-                $this->_logout($request);
-                return back()->withErrors([
-                    'nik' => 'Akun anda masih menunggu persetujuan admin',
-                ]);
-            } else if ($userStatus == "rejected") {
-                $this->_logout($request);
-                return back()->withErrors([
-                    'nik' => 'Akun anda ditolak.',
-                ]);
-            }
-
             return redirect()->intended('dashboard');
         }
         
