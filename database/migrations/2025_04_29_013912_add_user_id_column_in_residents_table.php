@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('residents', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id')->nullable()->after('id');
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
-
-        });
+        // Menambahkan kolom user_id ke tabel residents jika belum ada
+        if (Schema::hasTable('residents') && !Schema::hasColumn('residents', 'user_id')) {
+            Schema::table('residents', function (Blueprint $table) {
+                $table->unsignedBigInteger('user_id')->nullable()->after('id');
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+                $table->index('user_id');
+            });
+        }
     }
 
     /**
@@ -24,9 +26,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('residents', function (Blueprint $table) {
-            $table->dropForeign(['user_id']); // lepas foreign key dulu
-            $table->dropColumn('user_id');    // baru hapus kolom
-        });
+        if (Schema::hasTable('residents') && Schema::hasColumn('residents', 'user_id')) {
+            Schema::table('residents', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+                $table->dropIndex(['user_id']);
+                $table->dropColumn('user_id');
+            });
+        }
     }
 };

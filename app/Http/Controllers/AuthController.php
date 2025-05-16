@@ -75,7 +75,7 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required'],
-            'nik' => ['required', 'numeric', 'digits:16'],  // Validasi NIK harus angka dan 16 digit
+            'nik' => ['required', 'numeric', 'digits:16', 'unique:residents,nik'],  // Tambah unique validation
             'gender' => ['required', 'in:male,female'],  // Validasi gender
             'birth_date' => ['required', 'date'],  // Validasi tanggal lahir
             'birth_place' => ['required'],  // Validasi tempat lahir
@@ -90,6 +90,7 @@ class AuthController extends Controller
             'nik.required' => 'NIK harus diisi',
             'nik.numeric' => 'NIK harus berupa angka',
             'nik.digits' => 'NIK harus terdiri dari 16 digit',
+            'nik.unique' => 'NIK sudah terdaftar',
             'gender.required' => 'Jenis kelamin harus diisi',
             'birth_date.required' => 'Tanggal lahir harus diisi',
             'birth_place.required' => 'Tempat lahir harus diisi',
@@ -129,6 +130,11 @@ class AuthController extends Controller
     {
         $resident = Resident::find($resident_id);
 
+        // Cek apakah resident sudah memiliki user
+        if ($resident->user_id) {
+            return redirect()->route('login')->with('error', 'Akun untuk NIK ini sudah ada!');
+        }
+
         $validated = $request->validate([
             'password' => ['required', 'min:6'], // Validasi password
             'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'], // Validasi foto profil
@@ -145,7 +151,6 @@ class AuthController extends Controller
         $user->name = $resident->name;  // Ambil nama dari resident
         $user->nik = $resident->nik;    // Ambil NIK dari resident
         $user->password = Hash::make($request->input('password'));
-        $user->resident_id = $resident->id;  // Kaitkan user dengan resident
         $user->role_id = 9;  // Misal, untuk role user
 
         // Menyimpan foto profil jika ada
@@ -156,6 +161,15 @@ class AuthController extends Controller
         }
 
         $user->save();  // Simpan data user
+
+        // KAITKAN USER DENGAN RESIDENT
+        // Update resident dengan user_id yang baru dibuat
+        $resident->user_id = $user->id;
+        $resident->save();
+
+        // Sekarang juga simpan resident_id di user untuk kompatibilitas mundur
+        $user->resident_id = $resident->id;
+        $user->save();
 
         // Login otomatis setelah pendaftaran
         Auth::login($user);
