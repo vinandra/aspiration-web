@@ -66,6 +66,9 @@ Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris
 Route::middleware(['role:Admin,Pengadministrasi Umum,KASI Pembangunan,Sekretaris Lurah,Lurah,KASI Kesejahteraan Sosial,KASI Pemerintahan Ketentraman'])->group(function () {
     Route::post('/complaint/update-status/{id}', [ComplaintController::class, 'update_status']);
     Route::post('/complaint/forward/{id}', [ComplaintController::class, 'forward'])->name('complaint.forward');
+    
+    // Tambahkan route untuk update status aspirasi tampung
+    Route::post('/complaint/update-status-aspirasi/{id}', [ComplaintController::class, 'updateStatusAspirasiTampung'])->name('complaint.update-status-aspirasi');
 });
 
 // Complaint Publish/Unpublish Routes (Admin only)

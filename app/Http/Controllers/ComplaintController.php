@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Complaint;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\AspirasiTampung; // Tambahkan import
 use App\Notifications\ComplaintStatusChanged;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,22 +20,166 @@ class ComplaintController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $residentId = $user->resident->id ?? null;
 
         $middleRoles = [Role::ROLE_KASI_PEMBANGUNAN, Role::ROLE_SEKRETARIS_LURAH, Role::ROLE_LURAH];
+        
+        // Tambahkan filter parameter
+        $filter = $request->get('filter', 'all'); // all, registered, anonymous
 
-        $complaints = Complaint::query()
-            ->when($user->role_id == Role::ROLE_USER, fn($q) => $q->where('resident_id', $residentId))
-            ->when(in_array($user->role_id, $middleRoles), fn($q) => $q->where('forwarded_to', $user->role_id))
-            ->latest()
-            ->paginate(10);
+        if ($user->role_id == Role::ROLE_USER) {
+            // User biasa hanya melihat complaint miliknya sendiri
+            $complaints = Complaint::where('resident_id', $residentId)
+                ->latest()
+                ->paginate(10);
+        } else {
+            // Admin dan role lainnya
+            if ($filter === 'registered') {
+                // Hanya complaints dari database complaints (pengguna terdaftar)
+                $complaints = Complaint::query()
+                    ->when(in_array($user->role_id, $middleRoles), fn($q) => $q->where('forwarded_to', $user->role_id))
+                    ->with('resident')
+                    ->latest()
+                    ->paginate(10);
+                    
+                // Tambahkan marker untuk membedakan
+                foreach ($complaints as $complaint) {
+                    $complaint->source_type = 'registered';
+                    $complaint->complainant_name = $complaint->resident ? $complaint->resident->name : 'Unknown';
+                }
+            } elseif ($filter === 'anonymous') {
+                // Hanya aspirasi dari database aspirasi_tampung (pengguna anonim)
+                $aspirasiTampung = AspirasiTampung::latest()->paginate(10);
+                
+                // Transform aspirasi tampung ke format complaint
+                $complaints = $aspirasiTampung->through(function ($aspirasi) {
+                    $complaint = new \stdClass();
+                    $complaint->id = $aspirasi->id;
+                    $complaint->title = $aspirasi->title;
+                    $complaint->content = $aspirasi->content;
+                    $complaint->kategori = $aspirasi->kategori;
+                    $complaint->status = $aspirasi->status;
+                    $complaint->photo_proof = $aspirasi->photo_proof;
+                    $complaint->created_at = $aspirasi->created_at;
+                    $complaint->updated_at = $aspirasi->updated_at;
+                    $complaint->report_date = $aspirasi->created_at;
+                    $complaint->source_type = 'anonymous';
+                    $complaint->complainant_name = 'Anonim';
+                    
+                    // Tambahkan properties yang dibutuhkan view
+                    $complaint->status_label = match ($aspirasi->status) {
+                        'new' => 'Baru',
+                        'processing' => 'Sedang Diproses', 
+                        'completed' => 'Selesai',
+                        default => 'Tidak Diketahui',
+                    };
+                    $complaint->status_color = match ($aspirasi->status) {
+                        'new' => 'info',
+                        'processing' => 'warning',
+                        'completed' => 'success',
+                        default => 'secondary',
+                    };
+                    $complaint->report_date_label = \Carbon\Carbon::parse($aspirasi->created_at)->format('d M Y');
+                    $complaint->forwarded_to = null;
+                    $complaint->is_published = false;
+                    
+                    return $complaint;
+                });
+            } else {
+                // Gabungkan kedua database (default: all)
+                $complaints = Complaint::query()
+                    ->when(in_array($user->role_id, $middleRoles), fn($q) => $q->where('forwarded_to', $user->role_id))
+                    ->with('resident')
+                    ->latest()
+                    ->get();
+                    
+                // Tambahkan marker untuk complaints
+                foreach ($complaints as $complaint) {
+                    $complaint->source_type = 'registered';
+                    $complaint->complainant_name = $complaint->resident ? $complaint->resident->name : 'Unknown';
+                }
+                
+                // Ambil aspirasi tampung
+                $aspirasiTampung = AspirasiTampung::latest()->get();
+                
+                // Transform aspirasi tampung
+                $transformedAspirasi = $aspirasiTampung->map(function ($aspirasi) {
+                    $complaint = new \stdClass();
+                    $complaint->id = $aspirasi->id;
+                    $complaint->title = $aspirasi->title;
+                    $complaint->content = $aspirasi->content;
+                    $complaint->kategori = $aspirasi->kategori;
+                    $complaint->status = $aspirasi->status;
+                    $complaint->photo_proof = $aspirasi->photo_proof;
+                    $complaint->created_at = $aspirasi->created_at;
+                    $complaint->updated_at = $aspirasi->updated_at;
+                    $complaint->report_date = $aspirasi->created_at;
+                    $complaint->source_type = 'anonymous';
+                    $complaint->complainant_name = 'Anonim';
+                    
+                    // Tambahkan properties yang dibutuhkan view
+                    $complaint->status_label = match ($aspirasi->status) {
+                        'new' => 'Baru',
+                        'processing' => 'Sedang Diproses',
+                        'completed' => 'Selesai',
+                        default => 'Tidak Diketahui',
+                    };
+                    $complaint->status_color = match ($aspirasi->status) {
+                        'new' => 'info',
+                        'processing' => 'warning',
+                        'completed' => 'success',
+                        default => 'secondary',
+                    };
+                    $complaint->report_date_label = \Carbon\Carbon::parse($aspirasi->created_at)->format('d M Y');
+                    $complaint->forwarded_to = null;
+                    $complaint->is_published = false;
+                    
+                    return $complaint;
+                });
+                
+                // Gabungkan dan urutkan berdasarkan tanggal
+                $allComplaints = $complaints->concat($transformedAspirasi)->sortByDesc('created_at');
+                
+                // Manual pagination
+                $page = $request->get('page', 1);
+                $perPage = 10;
+                $total = $allComplaints->count();
+                
+                $complaints = new \Illuminate\Pagination\LengthAwarePaginator(
+                    $allComplaints->forPage($page, $perPage)->values(),
+                    $total,
+                    $perPage,
+                    $page,
+                    [
+                        'path' => $request->url(),
+                        'pageName' => 'page',
+                        'query' => $request->query(),
+                    ]
+                );
+            }
+        }
 
-        return view('pages.complaint.index', compact('complaints'));
+        return view('pages.complaint.index', compact('complaints', 'filter'));
     }
 
+    // Tambahkan method untuk update status aspirasi tampung
+    public function updateStatusAspirasiTampung(Request $request, $id)
+    {
+        $request->validate([
+            'status' => ['required', Rule::in(['new', 'processing', 'completed'])],
+        ]);
+
+        $aspirasi = AspirasiTampung::findOrFail($id);
+        $aspirasi->status = $request->status;
+        $aspirasi->save();
+
+        return redirect('/complaint')->with('success', 'Berhasil mengubah status');
+    }
+
+    // Method lainnya tetap sama seperti sebelumnya...
     public function create()
     {
         return view('pages.complaint.create');
@@ -265,5 +410,4 @@ class ComplaintController extends Controller
         $complaint->unpublish();
         return redirect()->back()->with('success', 'Aduan berhasil di-unpublish.');
     }
-
 }
