@@ -27,6 +27,9 @@ Route::post('/register-resident', [AuthController::class, 'registerResident'])->
 Route::get('/register-account/{resident_id}', [AuthController::class, 'registerAccountView'])->name('register.account');
 Route::post('/register-account/{resident_id}', [AuthController::class, 'registerAccount'])->name('register.account.post');
 
+
+Route::get('/aspirasi', [App\Http\Controllers\AspirasiTampungController::class, 'index'])->name('aspirasi.form');
+Route::post('/aspirasi', [App\Http\Controllers\AspirasiTampungController::class, 'store'])->name('aspirasi.store');
 // ========================
 // Dashboard Route (multi-role)
 // ========================

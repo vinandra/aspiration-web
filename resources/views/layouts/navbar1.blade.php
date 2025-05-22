@@ -10,8 +10,8 @@
             <a class="navbar-brand text-white" href="#">
                 <i class="bi bi-telephone-fill me-2"></i>024-3553232
             </a>
-            <a class="navbar-brand text-white" href="mailto:pendrikankidul2@gmail.com">
-                <i class="bi bi-envelope-fill me-2"></i>Email
+            <a class="navbar-brand text-white" href="/login">
+                <i class="bi bi-envelope-fill me-2"></i>Login
             </a>
         </div>
     </nav>
@@ -34,7 +34,7 @@
             <a class="nav-link" href="https://pendrikankidul.semarangkota.go.id/">Pendrikan Kidul</a>
           </li>
           <li class="nav-item px-3">
-            <a class="nav-link" href="/login">Aspirasi</a>
+            <a class="nav-link" href="{{ route('aspirasi.form') }}">Aspirasi</a>
           </li>
         </ul>
       </div>

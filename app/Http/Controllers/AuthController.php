@@ -1,14 +1,13 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\User;
-use App\Models\Resident;  
+use App\Models\Resident;
+use App\Models\AspirasiTampung;
+use App\Models\Complaint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-
 class AuthController extends Controller
 {
     // Menampilkan halaman login
@@ -19,14 +18,12 @@ class AuthController extends Controller
         }
         return view('pages.auth.login');
     }
-
     // Proses autentikasi login
     public function authenticate(Request $request)
     {
         if (Auth::check()) {
             return back();
         }
-
         // Validasi inputan
         $credentials = $request->validate([
             'nik' => ['required', 'numeric', 'digits:16'],  // Validasi NIK harus angka dan 16 digit
@@ -37,7 +34,6 @@ class AuthController extends Controller
             'nik.digits' => 'NIK harus terdiri dari 16 digit',
             'password.required' => 'Password tidak boleh kosong',
         ]);
-
         // Cek autentikasi
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
@@ -48,13 +44,11 @@ class AuthController extends Controller
             'nik' => 'Terjadi kesalahan, periksa kembali NIK atau password Anda.',
         ])->onlyInput('nik');
     }
-
     // Menampilkan halaman registrasi Resident (form pertama)
     public function registerResidentView()
     {
         return view('pages.auth.registerResident');
     }
-
     // Fungsi untuk menyimpan data Resident
     public function registerResident(Request $request)
     {
@@ -83,7 +77,13 @@ class AuthController extends Controller
             'marital_status.required' => 'Status pernikahan harus diisi',
             'status.required' => 'Status harus diisi',
         ]);
-
+        // Cek apakah NIK sudah terdaftar di user
+        $checkUser = User::where('nik', $request->input('nik'))->first();
+        if ($checkUser) {
+            return back()->withErrors([
+                'nik' => 'NIK ini sudah terdaftar sebagai pengguna. Silahkan login.',
+            ])->withInput();
+        }
         // Simpan data resident
         $resident = new Resident();
         $resident->name = $request->input('name');
@@ -98,28 +98,23 @@ class AuthController extends Controller
         $resident->phone = $request->input('phone');
         $resident->status = $request->input('status');
         $resident->save();  // Simpan data penduduk
-
         // Redirect ke halaman kedua untuk membuat akun dan password
         return redirect()->route('register.account', ['resident_id' => $resident->id]);
     }
-
     // Menampilkan halaman registrasi Akun dan Password (form kedua)
     public function registerAccountView($resident_id)
     {
         $resident = Resident::find($resident_id); // Ambil data resident berdasarkan ID
         return view('pages.auth.registerAccount', compact('resident'));
     }
-
     // Fungsi untuk menyimpan Akun dan Password
     public function registerAccount(Request $request, $resident_id)
     {
         $resident = Resident::find($resident_id);
-
         // Cek apakah resident sudah memiliki user
         if ($resident->user_id) {
             return redirect()->route('login')->with('error', 'Akun untuk NIK ini sudah ada!');
         }
-
         $validated = $request->validate([
             'password' => ['required', 'min:6'], // Validasi password
             'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'], // Validasi foto profil
@@ -130,39 +125,60 @@ class AuthController extends Controller
             'photo.mimes' => 'Foto harus berekstensi jpeg, png, jpg, gif, atau svg',
             'photo.max' => 'Ukuran foto maksimal 2MB',
         ]);
-
         // Simpan data user
         $user = new User();
         $user->name = $resident->name;  // Ambil nama dari resident
         $user->nik = $resident->nik;    // Ambil NIK dari resident
         $user->password = Hash::make($request->input('password'));
         $user->role_id = 9;  // Misal, untuk role user
-
         // Menyimpan foto profil jika ada
         if ($request->hasFile('photo')) {
             // Simpan foto di folder 'public/profile_photos'
             $photoPath = $request->file('photo')->store('profile_photos', 'public');
             $user->profile_photo = $photoPath; // Simpan path foto di database
         }
-
         $user->save();  // Simpan data user
-
         // KAITKAN USER DENGAN RESIDENT
         // Update resident dengan user_id yang baru dibuat
         $resident->user_id = $user->id;
         $resident->save();
-
         // Sekarang juga simpan resident_id di user untuk kompatibilitas mundur
         $user->resident_id = $resident->id;
         $user->save();
-
+        // Migrasi aspirasi dari aspirasi_tampungs ke complaints jika ada
+        $this->migrateAspirasiTampung($user);
         // Login otomatis setelah pendaftaran
         Auth::login($user);
-
         // Redirect ke halaman dashboard setelah login
         return redirect('/dashboard')->with('success', 'Berhasil mendaftar dan login, Anda dapat membuat aspirasi!');
     }
-
+    /**
+     * Fungsi untuk memindahkan data dari tabel aspirasi_tampungs ke complaints
+     * berdasarkan NIK yang sama dengan user yang baru terdaftar
+     */
+    private function migrateAspirasiTampung($user)
+    {
+        // Ambil semua aspirasi dengan NIK yang sama
+        $aspirasiTampungs = AspirasiTampung::where('nik', $user->nik)->get();
+        
+        // Jika ada aspirasi yang perlu dipindahkan
+        if ($aspirasiTampungs->count() > 0) {
+            foreach ($aspirasiTampungs as $aspirasi) {
+                // Buat complaint baru
+                $complaint = new Complaint();
+                $complaint->resident_id = $user->resident_id;
+                $complaint->title = $aspirasi->title;
+                $complaint->content = $aspirasi->content;
+                $complaint->kategori = $aspirasi->kategori;
+                $complaint->status = $aspirasi->status;
+                $complaint->photo_proof = $aspirasi->photo_proof;
+                $complaint->save();
+                
+                // Hapus data dari aspirasi_tampungs
+                $aspirasi->delete();
+            }
+        }
+    }
     // Fungsi untuk logout
     public function _logout(Request $request)
     {
@@ -170,7 +186,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
     }
-
     // Logout dan redirect ke halaman utama
     public function logout(Request $request)
     {
