@@ -163,9 +163,77 @@
                                             <td>
                                                 <span class="badge badge-secondary">{{ $item->kategori }}</span>
                                             </td>
-                                            <td>
-                                                <span class="badge badge-{{ $item->status_color }}">{{ $item->status_label }}</span>
+                                            {{-- status --}}
+                                            <td style="min-width: 180px;">
+                                                @php
+                                                    $steps = ['new' => 'Baru', 'processing' => 'Diproses', 'completed' => 'Selesai'];
+                                                    $colors = [
+                                                        'new' => 'bg-primary',      // biru
+                                                        'processing' => 'bg-warning', // kuning
+                                                        'completed' => 'bg-success' // hijau
+                                                    ];
+                                                    $textColors = [
+                                                        'new' => 'text-primary',
+                                                        'processing' => 'text-warning',
+                                                        'completed' => 'text-success'
+                                                    ];
+
+                                                    $currentKey = $item->status; // 'new', 'processing', atau 'completed'
+                                                    $keys = array_keys($steps);
+                                                    $currentIndex = array_search($currentKey, $keys);
+                                                @endphp
+
+                                                <div class="d-flex align-items-center gap-1 mb-2">
+                                                    @foreach ($steps as $key => $label)
+                                                        @php
+                                                            $index = array_search($key, $keys);
+                                                            $isActive = $index === $currentIndex;
+                                                            $isPassed = $index < $currentIndex;
+                                                        @endphp
+
+                                                        <div class="d-flex flex-column align-items-center">
+                                                            <div 
+                                                                class="rounded-circle 
+                                                                @if ($isActive)
+                                                                    {{ $colors[$key] }}
+                                                                @elseif ($isPassed)
+                                                                    {{ $colors[$key] }}  
+                                                                @else
+                                                                    bg-light
+                                                                @endif" 
+                                                                style="width: 20px; height: 20px;">
+                                                            </div>
+                                                            <small class="@if($isActive) {{ $textColors[$key] }} @else text-muted @endif">{{ $label }}</small>
+                                                        </div>
+
+                                                        @if ($index < count($steps) - 1)
+                                                            <div class="flex-grow-1" style="height: 2px; background-color: {{ $index < $currentIndex ? '#0d6efd' : '#dee2e6' }};"></div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+
+                                                {{-- Pesan status --}}
+                                                @php
+                                                // Tentukan role penangan aspirasi saat ini
+                                                $handlerRoleName = 'Admin'; // default jika belum diteruskan
+
+                                                if ($item->forwarded_to) {
+                                                    $handlerRoleName = \App\Models\Role::getRoleName($item->forwarded_to);
+                                                }
+                                                @endphp
+
+                                                <div>
+                                                    @if ($currentKey == 'new')
+                                                        <small class="text-primary">Aspirasi anda baru dibuat dan saat ini sedang berada di <strong>{{ $handlerRoleName }}</strong>.</small>
+                                                    @elseif ($currentKey == 'processing')
+                                                        <small class="text-warning">Aspirasi anda saat ini sedang diproses oleh <strong>{{ $handlerRoleName }}</strong>.</small>
+                                                    @elseif ($currentKey == 'completed')
+                                                        <small class="text-success">Aspirasi anda telah diselesaikan oleh <strong>{{ $handlerRoleName }}</strong>.</small>
+                                                    @endif
+                                                </div>
                                             </td>
+
+
                                             <td>
                                                 @if ($item->photo_proof)
                                                     @php 
