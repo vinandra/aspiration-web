@@ -22,27 +22,34 @@
         body {
             margin: 0;
             font-family: 'Nunito', sans-serif;
-            background-color: #ffffff; /* White background */
+            background-color: #ffffff;
+        }
+
+        main {
+            min-height: 100vh;
+            background: url('{{ asset('images/carousel/image25.png') }}') center/cover no-repeat;
+            padding-top: 100px;
+            padding-bottom: 50px;
         }
 
         .card-body {
-            background-color: #f8f9fa; /* Light background for the card */
+            background-color: rgba(255, 255, 255, 0.95);
             color: #333;
         }
 
         .form-control:focus {
             box-shadow: none;
-            border-color: #4e73df;
+            border-color: #c0392b;
         }
 
         .btn-primary {
-            background-color: #4e73df;
+            background-color: #c0392b;
             border: none;
             transition: background-color 0.3s ease;
         }
 
         .btn-primary:hover {
-            background-color: #2e59d9;
+            background-color: #922b21;
         }
 
         .header-contact {
@@ -61,16 +68,15 @@
         }
 
         .text-center a {
-            color: #f7f7f7;
+            color: #c0392b;
         }
 
         .text-center a:hover {
-            color: #4e73df;
+            color: #922b21;
         }
 
-        /* Ensure the form does not cover the navbar */
-        main {
-            padding-top: 100px; /* Adjust this to give space for the navbar */
+        .text-primary {
+            color: #c0392b !important;
         }
     </style>
 </head>

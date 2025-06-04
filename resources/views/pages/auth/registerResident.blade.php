@@ -22,27 +22,50 @@
         body {
             margin: 0;
             font-family: 'Nunito', sans-serif;
-            background-color: #ffffff; /* White background */
+            background-color: #ffffff;
+        }
+
+        main {
+            min-height: 100vh;
+            background: url('{{ asset('images/carousel/image25.png') }}') center/cover no-repeat;
+            padding-top: 100px;
+            padding-bottom: 50px;
         }
 
         .card-body {
-            background-color: #f8f9fa; /* Light background for the card */
+            background-color: rgba(255, 255, 255, 0.95);
             color: #333;
+        }
+
+        .card-header img {
+            max-height: 80px;
+        }
+
+        .text-center a {
+            color: #c0392b;
+        }
+
+        .text-center a:hover {
+            color: #922b21;
         }
 
         .form-control:focus {
             box-shadow: none;
-            border-color: #4e73df;
+            border-color: #c0392b;
         }
 
         .btn-primary {
-            background-color: #4e73df;
+            background-color: #c0392b;
             border: none;
             transition: background-color 0.3s ease;
         }
 
         .btn-primary:hover {
-            background-color: #2e59d9;
+            background-color: #922b21;
+        }
+
+        .text-primary {
+            color: #c0392b !important;
         }
 
         .header-contact {
@@ -54,23 +77,6 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-header img {
-            max-height: 80px;
-        }
-
-        .text-center a {
-            color: #f7f7f7;
-        }
-
-        .text-center a:hover {
-            color: #4e73df;
-        }
-
-        /* Ensure the form does not cover the navbar */
-        main {
-            padding-top: 100px; /* Adjust this to give space for the navbar */
         }
     </style>
 </head>
@@ -95,13 +101,12 @@
 
     <!-- Konten Register -->
     <main class="d-flex justify-content-center align-items-center">
-        <div class="card" style="max-width: 550px; width: 100%;">
+        <div class="card" style="max-width: 700px; width: 100%;">
             <div class="card-header text-center bg-white border-0">
                 <img src="{{ asset('images/carousel/pendrikan_kidul.png') }}" alt="Logo" style="max-height: 80px;" class="mb-2">
-                <h4 class="text-primary fw-bold mb-0">KELURAHAN PENDRIKAN KIDUL</h4>
+                <h4 class="text-primary fw-bold mb-0">REGISTRASI</h4>
             </div>
             <div class="card-body px-4 py-4">
-                <h5 class="text-center mb-4">Registrasi</h5>
                 <form class="user" action="{{ route('register.resident.post') }}" method="POST" enctype="multipart/form-data" onsubmit="const submitBtn = document.getElementById('submitBtn'); submitBtn.disabled = true; submitBtn.textContent = 'Loading...';">
                     @csrf
                     @method('POST')
@@ -220,6 +225,20 @@
     <script src="{{ asset('template/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('template/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
     <script src="{{ asset('template/js/sb-admin-2.min.js') }}"></script>
+
+    <!-- Aspirasi Table Read More Toggle (Example, place this in table page for admin) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.btn-read-more').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const parent = this.closest('td');
+                    parent.querySelector('.short-content').classList.toggle('d-none');
+                    parent.querySelector('.full-content').classList.toggle('d-none');
+                    this.remove(); // optional: remove button after expanding
+                });
+            });
+        });
+    </script>
 
 </body>
 
